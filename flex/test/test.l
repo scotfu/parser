@@ -17,22 +17,23 @@
 %}
 
 %%
-\\0x00             { printf("Token value: >>%s<<\n", yytext);  return NULL_;}     
+
 [ \t]         ;
-"[.-[\n\0x00]]*"   { printf("Token value: >>%s<<\n", yytext);  return QUOTED_STRING;}    
+\".*\"            { printf("Token value: >>%s<<\n", yytext);  return QUOTED_STRING;}
 #.*\n             { printf("Token value: >>%s<<\n", yytext);  return COMMENT;}  
-global            { printf("Token value: >>%s<<\n", yytext);  return GLOBAL_KEYWORD;}  
-host              { printf("Token value: >>%s<<\n", yytext);  return HOST_KEYWORD;}
+"global"            { printf("Token value: >>%s<<\n", yytext);  return GLOBAL_KEYWORD;}  
+"host"              { printf("Token value: >>%s<<\n", yytext);  return HOST_KEYWORD;}
 [_a-zA-Z][a-zA-Z0-9_]* { printf("Token value: >>%s<<\n", yytext);  return KEY;}
 [0-9]+\.[0-9]+    { printf("Token value: >>%s<<\n", yytext);  return FLOAT;}  
 [0-9]+            { printf("Token value: >>%s<<\n", yytext);  return INT;}  
 [a-zA-Z0-9\.\-_]+     { printf("Token value: >>%s<<\n", yytext);  return HOST_NAME_STRING;}  
 [a-zA-Z_/][a-zA-Z0-9\.\-_/]+  { printf("Token value: >>%s<<\n", yytext);  return UNQUOTED_STRING;}  
 ;                 { printf("Token value: >>%s<<\n", yytext);  return SEMI;}  
-\{                 { printf("Token value: >>%s<<\n", yytext);  return LEFT;}  
-\}                 { printf("Token value: >>%s<<\n", yytext);  return RIGHT;}  
-=                 { printf("Token value: >>%s<<\n", yytext);  return EQUAL;}  
-\n                { printf("Token value: >>NEW_LINE<<\n");  return NEW_LINE;}   
+"{"                 { printf("Token value: >>%s<<\n", yytext);  return LEFT;}  
+"}"                { printf("Token value: >>%s<<\n", yytext);  return RIGHT;}  
+"="                 { printf("Token value: >>%s<<\n", yytext);  return EQUAL;}  
+"\n"                { printf("Token value: >>NEW_LINE<<\n");  return NEW_LINE;}   
+"\\0x00"             { printf("Token value: >>%s<<\n", yytext);  return NULL_;}     
 %%
 
 
