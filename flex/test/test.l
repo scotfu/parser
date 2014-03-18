@@ -19,7 +19,7 @@
 %%
 
 [ \t]         ;
-\".*\"            { printf("Token value: >>%s<<\n", yytext);  return QUOTED_STRING;}
+\"(?:\\.|[^"\\])*\"            { printf("Token value: >>%s<<\n", yytext);  return QUOTED_STRING;}
 #.*\n             { printf("Token value: >>%s<<\n", yytext);  return COMMENT;}  
 "global"            { printf("Token value: >>%s<<\n", yytext);  return GLOBAL_KEYWORD;}  
 "host"              { printf("Token value: >>%s<<\n", yytext);  return HOST_KEYWORD;}

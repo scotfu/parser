@@ -6,24 +6,40 @@
   %}
 
 %union {char *str; tree_t *t;}
-%token<str> VARIABLE INT
-%token EQ END
-%type<t> assign
+%token<str> QUOTED_STRING COMMENT GLOBAL_KEYWORD HOST_KEYWORD KEY FLOAT INT HOST_NAME_STRING UNQUOTED_STRING
+%token EQ END SEMI LEFT RIGHT EQUAL NEW_LINE NULL_
+%type<t> conf global_conf host_confs key_value_pairs host_conf key_value key value m_string
 
 %%
-prog:
-assign prog { cur->next = $1; cur = cur->next;
-  printf("Assign %s to %s!\n", cur->var_value, cur->var_name);
-}
-| error { printf("Error before we saw a variable name.\n"); exit(0); }
-| END     {};
+conf: global_conf host_confs
 
-assign:
-VARIABLE EQ INT { $$ = (tree_t *)malloc(sizeof(tree_t));
-  $$->var_name=$1; $$->var_value=$3; $$->next=0;
-}
-| VARIABLE error EQ INT { printf("Error after a variable name.\n"); exit(0);}
-| VARIABLE EQ error INT { printf("Error after equals sign.\n"); exit(0);}
+global_conf: GLOBAL_KEYWORD LEFT key_value_pairs RIGHT SEMI
+            |GLOBAL_KEYWORD LEFT key_value_pairs RIGHT
+host_confs : /* empty */
+            | host_confs host conf
+
+host_conf : HOST_KEYWORD HOST_NAME_STRING LEFT key_value_pairs RIGHT  
+           |HOST_KEYWORD HOST_NAME_STRING LEFT key_value_pairs RIGHT SEMI  
+           |HOST_KEYWORD HOST_NAME_STRING LEFT key_value_pairs NEW_LINE RIGHT SEMI
+           |HOST_KEYWORD HOST_NAME_STRING LEFT key_value_pairs NEW_LINE RIGHT
+
+key_value_pairs : /* empty */
+                  |key_value NEW_LINE  {cur->next = $1; cur = cur->next;
+                             printf("Assign %s to %s!\n", cur->var_value, cur->var_name}
+                  |key_value_pairs key_value
+
+key_value : KEY EQUAL value 
+
+
+value: INT { $$ = (tree_t *)malloc(sizeof(tree_t)); $$->var_value=$1;$$->next=0;}
+      |FLOAT { $$ = (tree_t *)malloc(sizeof(tree_t)); $$->var_value=$1;$$->next=0;}
+      |m_string
+
+m_string: QUOTED_STRING { $$ = (tree_t *)malloc(sizeof(tree_t)); $$->var_value=$1;$$->next=0;}
+       |UNQUOTED_STRING { $$ = (tree_t *)malloc(sizeof(tree_t)); $$->var_value=$1;$$->next=0;}
+       |HOST_NAME_STRING { $$ = (tree_t *)malloc(sizeof(tree_t)); $$->var_value=$1;$$->next=0;}
+       |KEY { $$ = (tree_t *)malloc(sizeof(tree_t)); $$->var_value=$1;$$->next=0;}
+
 
 %%
 int main() {

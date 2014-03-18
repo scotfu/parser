@@ -1,11 +1,26 @@
-<string> ::= <quoted_string>|<unquoted_string>|<host_name_string>
+<string> ::= <quoted_string>
+	    |<unquoted_string>
+	    |<host_name_string>
+            |<key>
+  
 <conf> ::= <global_conf> <host_confs>
-<global_conf> :: =  global  "{"  <key_value_pairs>  "}"  "" |";"
-<host_confs> ::= <host_conf>|<host_confs><host_conf>
-<host_conf> ::= host  <host_name>  "{"  <key_value_pairs> "}" 'empty'|";" 
-<key_value_pairs> ::= <key_value>|<key_value_pairs>  <key_value>
-<key_value> ::= <key> "="  <int>|<float>|<string> \n
+
+<global_conf> :: =  global  "{"  <key_value_pairs>  "}"  ";"
+	           |global  "{"  <key_value_pairs>  "}"
+<host_confs> ::= empty| <host_confs>  <host_conf>
+<host_conf> ::= host  <host_name>  "{"  <key_value_pairs> "}" ";" 
+	       |host  <host_name>  "{"  <key_value_pairs> "}"
+
+<key_value_pairs> ::= /* empty */
+		      | <key_value> "\n"
+		      | <key_value_pairs> <key_value> "\n"
+
+<key_value> ::= <key> "="  <int>   
+	       |<key> "=" <float>  
+	       |<key> "=" <string> 
+
 <host_name> ::= <host_name_string>
+	        |<key>
 
 
 Token Type
