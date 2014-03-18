@@ -1,48 +1,99 @@
-#ifndef YYTOKENTYPE                                                                         
-# define YYTOKENTYPE                                                                        
-/* Put the tokens into the symbol table, so that GDB and other debuggers                 
-   know about them.  */                                                                  
-enum yytokentype {                                                                       
-  QUOTED_STRING = 258,
-  COMMENT = 259,
-  GLOBAL_KEYWORD= 259,
-  HOST_KEYWORD= 260,
-  KEY= 261,
-  FLOAT= 262,
-  INT= 263,
-  HOST_NAME_STRING= 264,
-  UNQUOTED_STRING=265,
-  SEMI=266,
-  LEFT=267,
-  RIGHT=268,
-  EQUAL=269,
-  NEW_LINE=270,
-};                                                                                       
-#endif 
+/* A Bison parser, made by GNU Bison 2.7.12-4996.  */
 
-#define QUOTED_STRING 258
-#define COMMENT 259
-#define GLOBAL_KEYWORD 259
-#define HOST_KEYWORD 260
-#define KEY 261
-#define FLOAT 262
-#define INT 263
-#define HOST_NAME_STRING 264
-#define UNQUOTED_STRING 265
-#define SEMI 266
-#define LEFT 267
-#define RIGHT 268
-#define EQUAL 269
-#define NEW_LINE 270
+/* Bison interface for Yacc-like parsers in C
+   
+      Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+
+/* As a special exception, you may create a larger work that contains
+   part or all of the Bison parser skeleton and distribute that work
+   under terms of your choice, so long as that work isn't itself a
+   parser generator using the skeleton or a modified version thereof
+   as a parser skeleton.  Alternatively, if you modify or redistribute
+   the parser skeleton itself, you may (at your option) remove this
+   special exception, which will cause the skeleton and the resulting
+   Bison output files to be licensed under the GNU General Public
+   License without this special exception.
+   
+   This special exception was added by the Free Software Foundation in
+   version 2.2 of Bison.  */
+
+#ifndef YY_YY_BISON_TAB_H_INCLUDED
+# define YY_YY_BISON_TAB_H_INCLUDED
+/* Enabling traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
+#endif
+#if YYDEBUG
+extern int yydebug;
+#endif
+
+/* Tokens.  */
+#ifndef YYTOKENTYPE
+# define YYTOKENTYPE
+   /* Put the tokens into the symbol table, so that GDB and other debuggers
+      know about them.  */
+   enum yytokentype {
+     QUOTED_STRING = 258,
+     COMMENT = 259,
+     KEY = 260,
+     HOST_NAME_STRING = 261,
+     UNQUOTED_STRING = 262,
+     INT = 263,
+     FLOAT = 264,
+     GLOBAL_KEYWORD = 265,
+     HOST_KEYWORD = 266,
+     EQUAL = 267,
+     SEMI = 268,
+     LEFT = 269,
+     RIGHT = 270,
+     NEW_LINE = 271,
+     NULL_ = 272
+   };
+#endif
+
+
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-/* Line 1529 of yacc.c.  */
-#line 63 "bison.tab.h"
-  YYSTYPE;
+{
+/* Line 2053 of yacc.c  */
+#line 8 "bison.y"
+char *str; tree_t *t;
+
+/* Line 2053 of yacc.c  */
+#line 77 "bison.tab.h"
+} YYSTYPE;
+# define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
-# define YYSTYPE_IS_TRIVIAL 1
 #endif
 
 extern YYSTYPE yylval;
 
+#ifdef YYPARSE_PARAM
+#if defined __STDC__ || defined __cplusplus
+int yyparse (void *YYPARSE_PARAM);
+#else
+int yyparse ();
+#endif
+#else /* ! YYPARSE_PARAM */
+#if defined __STDC__ || defined __cplusplus
+int yyparse (void);
+#else
+int yyparse ();
+#endif
+#endif /* ! YYPARSE_PARAM */
+
+#endif /* !YY_YY_BISON_TAB_H_INCLUDED  */

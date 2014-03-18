@@ -6,4 +6,7 @@ struct tree {
   struct t *next;
 }
 
-tree insert()
+  void traverse(tree root){
+  
+  }
+    

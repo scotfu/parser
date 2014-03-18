@@ -3,6 +3,8 @@
 
 int  yylex   ();
 void yyerror (char *);
+int yyparse();
+FILE *yyin;
 
 typedef struct tree_st {
   char           *var_name;

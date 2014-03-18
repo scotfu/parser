@@ -340,6 +340,9 @@ void yyfree (void *  );
 
 /* Begin user sect3 */
 
+#define yywrap(n) 1
+#define YY_SKIP_YYWRAP
+
 typedef unsigned char YY_CHAR;
 
 FILE *yyin = (FILE *) 0, *yyout = (FILE *) 0;
@@ -489,8 +492,10 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "test.l"
-#line 2 "test.l"
+#line 1 "flex.l"
+#line 2 "flex.l"
+#include "tree.h"
+#include "bison.tab.h"
 #define QUOTED_STRING 258
 #define COMMENT 259
 #define GLOBAL_KEYWORD 260
@@ -506,7 +511,7 @@ char *yytext;
 #define EQUAL 270
 #define NEW_LINE 271
 #define NULL_ 272
-#line 510 "lex.yy.c"
+#line 515 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -693,10 +698,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 19 "test.l"
+#line 21 "flex.l"
 
 
-#line 700 "lex.yy.c"
+#line 705 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -781,93 +786,93 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 21 "test.l"
+#line 23 "flex.l"
 ;
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 22 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return QUOTED_STRING;}
+#line 24 "flex.l"
+{yylval.str=strdup(yytext);  return QUOTED_STRING;}
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 23 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return COMMENT;}  
+#line 25 "flex.l"
+{ yylval.str=strdup(yytext);  return COMMENT;}  
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 24 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return GLOBAL_KEYWORD;}  
+#line 26 "flex.l"
+{ return GLOBAL_KEYWORD;}  
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 25 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return HOST_KEYWORD;}
+#line 27 "flex.l"
+{ return HOST_KEYWORD;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 26 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return KEY;}
+#line 28 "flex.l"
+{ yylval.str=strdup(yytext);  return KEY;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 27 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return FLOAT;}  
+#line 29 "flex.l"
+{ yylval.str=strdup(yytext);  return FLOAT;}  
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 28 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return INT;}  
+#line 30 "flex.l"
+{ yylval.str=strdup(yytext);  return INT;}  
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 29 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return HOST_NAME_STRING;}  
+#line 31 "flex.l"
+{ yylval.str=strdup(yytext);  return HOST_NAME_STRING;}  
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 30 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return UNQUOTED_STRING;}  
+#line 32 "flex.l"
+{ yylval.str=strdup(yytext);  return UNQUOTED_STRING;}  
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 31 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return SEMI;}  
+#line 33 "flex.l"
+{ return SEMI;}  
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 32 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return LEFT;}  
+#line 34 "flex.l"
+{ return LEFT;}  
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 33 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return RIGHT;}  
+#line 35 "flex.l"
+{ return RIGHT;}  
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 34 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return EQUAL;}  
+#line 36 "flex.l"
+{ return EQUAL;}  
 	YY_BREAK
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
-#line 35 "test.l"
-{ printf("Token value: >>NEW_LINE<<\n");  return NEW_LINE;}   
+#line 37 "flex.l"
+{ return NEW_LINE;}   
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 36 "test.l"
-{ printf("Token value: >>%s<<\n", yytext);  return NULL_;}     
+#line 38 "flex.l"
+{ return NULL_;}     
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 37 "test.l"
+#line 39 "flex.l"
 ECHO;
 	YY_BREAK
-#line 871 "lex.yy.c"
+#line 876 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1865,32 +1870,8 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 37 "test.l"
+#line 39 "flex.l"
 
 
 
 
-int main(int argc, char **argv) {
-    int n;
-    FILE *tmpfile = fopen(argv[1],"r");
-    if(!tmpfile)
-    {
-    printf("ERR:F:\n");
-    return -1;    
-    }
-    yyin = tmpfile;
-
-
- while(1) {
-
- n = yylex();
-
- printf("Token type: %d\n", n);
-
- if (!n) /* End of file */
-
- return 0;
-
- }
-
-}
