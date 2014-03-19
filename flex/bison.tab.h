@@ -69,7 +69,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 8 "bison.y"
+#line 9 "bison.y"
 char *str; tree_t *t;
 
 /* Line 2053 of yacc.c  */

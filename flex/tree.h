@@ -4,6 +4,7 @@
 int  yylex   ();
 void yyerror (char *);
 int yyparse();
+int yylineno;
 FILE *yyin;
 
 typedef struct tree_st {

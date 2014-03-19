@@ -169,7 +169,20 @@ extern FILE *yyin, *yyout;
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
 
-    #define YY_LESS_LINENO(n)
+    /* Note: We specifically omit the test for yy_rule_can_match_eol because it requires
+     *       access to the local variable yy_act. Since yyless() is a macro, it would break
+     *       existing scanners that call yyless() from OUTSIDE yylex. 
+     *       One obvious solution it to make yy_act a global. I tried that, and saw
+     *       a 5% performance hit in a non-yylineno scanner, because yy_act is
+     *       normally declared as a register variable-- so it is not worth it.
+     */
+    #define  YY_LESS_LINENO(n) \
+            do { \
+                int yyl;\
+                for ( yyl = n; yyl < yyleng; ++yyl )\
+                    if ( yytext[yyl] == '\n' )\
+                        --yylineno;\
+            }while(0)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -371,8 +384,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 17
-#define YY_END_OF_BUFFER 18
+#define YY_NUM_RULES 18
+#define YY_END_OF_BUFFER 19
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -382,7 +395,7 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[45] =
     {   0,
-        0,    0,   18,   17,    1,   15,   17,   17,    9,   17,
+        0,    0,   19,   17,    1,   15,   17,   17,    9,   17,
         8,   11,   14,    6,   17,    6,    6,   12,   13,    0,
         2,    0,    0,    3,    9,   10,    9,    8,    9,    6,
         0,    6,    6,    7,    0,    6,    6,    0,    6,    5,
@@ -478,6 +491,11 @@ static yyconst flex_int16_t yy_chk[108] =
        44,   44,   44,   44,   44,   44,   44
     } ;
 
+/* Table of booleans, true if rule could match eol. */
+static yyconst flex_int32_t yy_rule_can_match_eol[19] =
+    {   0,
+0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,     };
+
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
 
@@ -511,7 +529,7 @@ char *yytext;
 #define EQUAL 270
 #define NEW_LINE 271
 #define NULL_ 272
-#line 515 "lex.yy.c"
+#line 533 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -698,10 +716,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 21 "flex.l"
+#line 22 "flex.l"
 
 
-#line 705 "lex.yy.c"
+#line 723 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -773,6 +791,16 @@ yy_find_action:
 
 		YY_DO_BEFORE_ACTION;
 
+		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
+			{
+			int yyl;
+			for ( yyl = 0; yyl < yyleng; ++yyl )
+				if ( yytext[yyl] == '\n' )
+					   
+    yylineno++;
+;
+			}
+
 do_action:	/* This label is used only to access EOF actions. */
 
 		switch ( yy_act )
@@ -786,93 +814,98 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 23 "flex.l"
-;
+#line 24 "flex.l"
+{}
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 24 "flex.l"
+#line 25 "flex.l"
 {yylval.str=strdup(yytext);  return QUOTED_STRING;}
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 25 "flex.l"
+#line 26 "flex.l"
 { yylval.str=strdup(yytext);  return COMMENT;}  
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 26 "flex.l"
-{ return GLOBAL_KEYWORD;}  
+#line 27 "flex.l"
+{ printf("Found keyword:%s\n",yytext);return GLOBAL_KEYWORD;}  
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 27 "flex.l"
+#line 28 "flex.l"
 { return HOST_KEYWORD;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 28 "flex.l"
+#line 29 "flex.l"
 { yylval.str=strdup(yytext);  return KEY;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 29 "flex.l"
+#line 30 "flex.l"
 { yylval.str=strdup(yytext);  return FLOAT;}  
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 30 "flex.l"
+#line 31 "flex.l"
 { yylval.str=strdup(yytext);  return INT;}  
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 31 "flex.l"
+#line 32 "flex.l"
 { yylval.str=strdup(yytext);  return HOST_NAME_STRING;}  
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 32 "flex.l"
+#line 33 "flex.l"
 { yylval.str=strdup(yytext);  return UNQUOTED_STRING;}  
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 33 "flex.l"
+#line 34 "flex.l"
 { return SEMI;}  
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 34 "flex.l"
-{ return LEFT;}  
+#line 35 "flex.l"
+{printf("Found keyword%s",yytext); return LEFT;}  
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 35 "flex.l"
-{ return RIGHT;}  
+#line 36 "flex.l"
+{printf("Found keyword%s",yytext); return RIGHT;}  
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 36 "flex.l"
+#line 37 "flex.l"
 { return EQUAL;}  
 	YY_BREAK
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
-#line 37 "flex.l"
+#line 38 "flex.l"
 { return NEW_LINE;}   
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 38 "flex.l"
+#line 39 "flex.l"
 { return NULL_;}     
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 39 "flex.l"
+#line 40 "flex.l"
+{printf("Found wft:%s",yytext);}  
+	YY_BREAK
+case 18:
+YY_RULE_SETUP
+#line 41 "flex.l"
 ECHO;
 	YY_BREAK
-#line 876 "lex.yy.c"
+#line 909 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1233,6 +1266,10 @@ static int yy_get_next_buffer (void)
 
 	*--yy_cp = (char) c;
 
+    if ( c == '\n' ){
+        --yylineno;
+    }
+
 	(yytext_ptr) = yy_bp;
 	(yy_hold_char) = *yy_cp;
 	(yy_c_buf_p) = yy_cp;
@@ -1307,6 +1344,11 @@ static int yy_get_next_buffer (void)
 	c = *(unsigned char *) (yy_c_buf_p);	/* cast for 8-bit char's */
 	*(yy_c_buf_p) = '\0';	/* preserve yytext */
 	(yy_hold_char) = *++(yy_c_buf_p);
+
+	if ( c == '\n' )
+		   
+    yylineno++;
+;
 
 	return c;
 }
@@ -1778,6 +1820,9 @@ static int yy_init_globals (void)
      * This function is called from yylex_destroy(), so don't allocate here.
      */
 
+    /* We do not touch yylineno unless the option is enabled. */
+    yylineno =  1;
+    
     (yy_buffer_stack) = 0;
     (yy_buffer_stack_top) = 0;
     (yy_buffer_stack_max) = 0;
@@ -1870,7 +1915,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 39 "flex.l"
+#line 41 "flex.l"
 
 
 
