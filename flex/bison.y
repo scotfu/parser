@@ -1,14 +1,45 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "tree.h"
 tree_t top, *cur;
+void insert_substring(char *a, char *b, int position)
+ {
+   char *f, *e;
+   int length;
+ 
+   length = strlen(a);
+ 
+   f = substring(a, 1, position - 1 );      
+   e = substring(a, position, length-position+1);
+ 
+   strcpy(a, "");
+   strcat(a, f);
+   free(f);
+   strcat(a, b);
+   strcat(a, e);
+   free(e);
+ }
+char *substring(char *string, int position, int length) 
+ {
+   char *pointer;
+   int c;
+ 
+   pointer = malloc(length+1);
+ 
+   if( pointer == NULL )
+     exit(EXIT_FAILURE);
+ 
+   for( c = 0 ; c < length ; c++ ) 
+     *(pointer+c) = *((string+position-1)+c);       
+ 
+   *(pointer+c) = '\0';
+ 
+   return pointer;
+ }
 %}
 
-int search_global(tree_t node){
-    tree_t *tmp
-
-}
 
 %union {char *str; tree_t *t;}
 
@@ -20,38 +51,31 @@ conf: global_conf host_confs {}
 ;
 
 global_conf:
-GLOBAL_KEYWORD {$1 = (tree_t *)malloc(sizeof(tree_t));cur->next=$1;cur=cur->next;cur->var_name="global";cur->var_value=" "}LEFT key_value_pairs RIGHT 
+GLOBAL_KEYWORD {$1 = (tree_t *)malloc(sizeof(tree_t));cur->next=$1;cur=cur->next;cur->var_name="GLOBAL";cur->var_value="";cur->type=265;}LEFT key_value_pairs RIGHT
 ;
 
 host_confs : /* empty */ 
 | host_confs host_conf  {}
 	    ;
 host_conf :  
-HOST_KEYWORD HOST_NAME_STRING {$1 = (tree_t *)malloc(sizeof(tree_t));cur->next=$1;cur=cur->next;cur->var_name="HOST";cur->var_value=" "; char *tmp= $2;$2 = (tree_t *)malloc(sizeof(tree_t));cur->next=$2;cur=cur->next;cur->var_name=tmp;cur->var_value="";} LEFT key_value_pairs RIGHT
-
+HOST_KEYWORD HOST_NAME_STRING {$1 = (tree_t *)malloc(sizeof(tree_t));cur->next=$1;cur=cur->next;cur->var_name="HOST";cur->var_value=$2;cur->type=266} LEFT key_value_pairs RIGHT
 ;
 
 key_value_pairs : key_value  {cur->next = $1; cur = cur->next;}
 |key_value_pairs key_value  {cur->next = $2; cur = cur->next;}
 |/* empty */ 		 ;
 
-key_value : KEY EQUAL INT {$$ = (tree_t *)malloc(sizeof(tree_t)); 
-                      $$->var_name=$1; $$->var_value=$3; $$->next=0;
+key_value : KEY EQUAL INT {$$ = (tree_t *)malloc(sizeof(tree_t));
+  $$->var_name=$1; $$->var_value=$3; $$->next=0;cur->type=263;
                    }
-|KEY EQUAL FLOAT { $$ = (tree_t *)malloc(sizeof(tree_t)); 
-                      $$->var_name=$1; $$->var_value=$3; $$->next=0;
+|KEY EQUAL FLOAT { $$ = (tree_t *)malloc(sizeof(tree_t));
+                      $$->var_name=$1; $$->var_value=$3; $$->next=0;cur->type=264
                      }
-|KEY EQUAL QUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t)); 
-                      $$->var_name=$1; $$->var_value=$3; $$->next=0;
+|KEY EQUAL QUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t));
+                      $$->var_name=$1; $$->var_value=$3; $$->next=0;cur->type=258
                    }
-|KEY EQUAL UNQUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t)); 
-                      $$->var_name=$1; $$->var_value=$3; $$->next=0;
-                   }
-|KEY EQUAL HOST_NAME_STRING {$$ = (tree_t *)malloc(sizeof(tree_t)); 
-                      $$->var_name=$1; $$->var_value=$3; $$->next=0;
-                   }
-|KEY EQUAL KEY {$$ = (tree_t *)malloc(sizeof(tree_t)); 
-                      $$->var_name=$1; $$->var_value=$3; $$->next=0;
+|KEY EQUAL UNQUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t));
+                      $$->var_name=$1; $$->var_value=$3; $$->next=0;cur->type=262
                    }
 ;
 %%
@@ -67,11 +91,49 @@ int main(int argc, char **argv) {
 	    top.next = 0;
 	    cur = &top;
 	    yyparse();
-	    printf("Let's walk the tree again:\n");
 	    cur = top.next; // The first node was a dummy node representing the <prog> production.    
-	    	    while (cur) {
-	      printf("%s: %s\n", cur->var_name, cur->var_value);
-	      cur = cur->next;}
+	    //track the global settings
+	    char tmp_g_conf[1000];
+	    while(cur){
+	    if(cur->var_name== "GLOBAL"){
+	      printf("%s:\n",cur->var_name);}
+	    else if(cur->var_name=="HOST"){
+	      printf("%s %s:\n",cur->var_name,cur->var_value);
+	      break;}
+	    else{
+	      strcat(tmp_g_conf,cur->var_name);
+	      	      printf("%s,\n",cur->var_name);
+	      }
+	    cur= cur->next;
+	    }
+	    //	        printf("this is gloal conf name:%s",tmp_g_conf);
+
+	    cur = top.next; // The first node was a dummy node representing the <prog> production.    
+	    int global_flag = 0;
+
+	    //  char *tmp_tag="I::";
+  //  insert_substring($1,tmp_tag,1);
+
+	    while(cur){
+	    if(cur->var_name== "GLOBAL"){
+	      printf("%s:\n",cur->var_name);}
+	    else if(cur->var_name=="HOST"){
+	      global_flag = 1; //done
+	      printf("%s %s:\n",cur->var_name,cur->var_value);}
+	    else{
+	      strcat(tmp_g_conf,cur->var_name);
+	      if(strstr(tmp_g_conf,cur->var_name)){
+		if(global_flag){
+		  printf("   O %s:%s\n",cur->var_name,cur->var_value);}
+		else{
+		  printf("    %s:%s\n",cur->var_name,cur->var_value);}
+		 }
+	      else{
+		printf("    %s:%s\n",cur->var_name,cur->var_value);}
+	    }
+	    cur= cur->next;
+	    }
+
 	    return 0;
             }
 
