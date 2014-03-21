@@ -1719,7 +1719,7 @@ int main(int argc, char **argv) {
 	      break;}
 	    else{
 	      strcat(tmp_g_conf,cur->var_name);
-	      	      printf("%s,\n",cur->var_name);
+	      //	      	      printf("%s,\n",cur->var_name);
 	      }
 	    cur= cur->next;
 	    }
@@ -1738,10 +1738,11 @@ int main(int argc, char **argv) {
 	      global_flag = 1; //done
 	      printf("%s %s:\n",cur->var_name,cur->var_value);}
 	    else{
-		  char *output;
+		  char output[1000]= "";
 		  strcat(output,cur->var_name);
 		  strcat(output,":");
 		  strcat(output,cur->var_value);
+		  strcat(output,"\n");
 		  //add F,I,S,Q
 		  switch(cur->type){
 		  case 263:
@@ -1763,10 +1764,10 @@ int main(int argc, char **argv) {
 		  if(strstr(tmp_g_conf,cur->var_name)){
 		    if(global_flag){
 		      insert_substring(output,"O",5);
-		  }
+		    }
 		  printf("%s",output);
-	    }
-	    cur= cur->next;
+		  }}
+		  cur= cur->next;
 	    }
 
 	    return 0;
