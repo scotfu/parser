@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
 	    int global_flag = 0;
 
 	    //  char *tmp_tag="I::";
-  //  insert_substring($1,tmp_tag,1);
+	    //  insert_substring($1,tmp_tag,1);
 
 	    while(cur){
 	    if(cur->var_name== "GLOBAL"){
@@ -121,21 +121,39 @@ int main(int argc, char **argv) {
 	      global_flag = 1; //done
 	      printf("%s %s:\n",cur->var_name,cur->var_value);}
 	    else{
-	      strcat(tmp_g_conf,cur->var_name);
-	      if(strstr(tmp_g_conf,cur->var_name)){
-		if(global_flag){
-		  printf("   O %s:%s\n",cur->var_name,cur->var_value);}
-		else{
-		  printf("    %s:%s\n",cur->var_name,cur->var_value);}
-		 }
-	      else{
-		printf("    %s:%s\n",cur->var_name,cur->var_value);}
+		  char *output;
+		  strcat(output,cur->var_name);
+		  strcat(output,":");
+		  strcat(output,cur->var_value);
+		  //add F,I,S,Q
+		  switch(cur->type){
+		  case 263:
+		    insert_substring(output, "I::",1);
+		    break;
+		  case 258:
+		    insert_substring(output, "Q::",1);
+		    break;
+		  case 262:
+		    insert_substring(output, "S::",1);
+		    break;
+		  case 264:
+		    insert_substring(output, "F::",1);
+		    break;
+		  default:
+		    ;
+		  }
+		  //whether o
+		  if(strstr(tmp_g_conf,cur->var_name)){
+		    if(global_flag){
+		      insert_substring(output,"O",5);
+		  }
+		  printf("%s",output);
 	    }
 	    cur= cur->next;
 	    }
 
 	    return 0;
-            }
+}
 
 
 void yyerror(char *s)
