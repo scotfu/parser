@@ -3,19 +3,12 @@
 #include <stdlib.h>
 #include "tree.h"
 tree_t top, *cur;
-
- struct tree_t* newlink(char *s1, char *s2, tree_t* t3){
-                 
-   tree_t *tree_t1 = (tree_t *)malloc(sizeof(tree_t)); 
-   tree_t *tree_t2 = (tree_t *)malloc(sizeof(tree_t)); 
-   tree_t1->var_name = s1;
-   tree_t1->next = tree_t2;
-   tree_t2->var_name = s2;
-   tree_t2->next = t3;
-   return tree_t1;
-     }
-
 %}
+
+int search_global(tree_t node){
+    tree_t *tmp
+
+}
 
 %union {char *str; tree_t *t;}
 
@@ -23,26 +16,24 @@ tree_t top, *cur;
 %type <t> global_conf host_confs key_value_pairs host_conf key_value
 %%
 
-conf: global_conf host_confs { printf("CONF\n");}
+conf: global_conf host_confs {}
 ;
 
 global_conf:
-GLOBAL_KEYWORD LEFT key_value_pairs RIGHT { printf("GLOBAL CONF\n");}
+GLOBAL_KEYWORD {$1 = (tree_t *)malloc(sizeof(tree_t));cur->next=$1;cur=cur->next;cur->var_name="global";cur->var_value=" "}LEFT key_value_pairs RIGHT 
 ;
 
 host_confs : /* empty */ 
-| host_confs host_conf  { printf("HOSTS CONF\n");}
+| host_confs host_conf  {}
 	    ;
 host_conf :  
-HOST_KEYWORD HOST_NAME_STRING LEFT key_value_pairs RIGHT { 
-  cur->next = newlink($1, $2, $4) ; cur = cur->next->next->next; 
-                   }
+HOST_KEYWORD HOST_NAME_STRING {$1 = (tree_t *)malloc(sizeof(tree_t));cur->next=$1;cur=cur->next;cur->var_name="HOST";cur->var_value=" "; char *tmp= $2;$2 = (tree_t *)malloc(sizeof(tree_t));cur->next=$2;cur=cur->next;cur->var_name=tmp;cur->var_value="";} LEFT key_value_pairs RIGHT
+
 ;
 
-key_value_pairs : /* empty */ 
-|key_value_pairs key_value  {cur->next = $2; cur = cur->next; 
-                   }
-		 ;
+key_value_pairs : key_value  {cur->next = $1; cur = cur->next;}
+|key_value_pairs key_value  {cur->next = $2; cur = cur->next;}
+|/* empty */ 		 ;
 
 key_value : KEY EQUAL INT {$$ = (tree_t *)malloc(sizeof(tree_t)); 
                       $$->var_name=$1; $$->var_value=$3; $$->next=0;
