@@ -16,7 +16,7 @@ host                   { return HOST_KEYWORD;}
 [0-9]+                   { yylval.str=strdup(yytext);  return INT;}  
 [a-zA-Z0-9\.\-_]+        { yylval.str=strdup(yytext);  return HOST_NAME_STRING;}  
 [a-zA-Z_/][a-zA-Z0-9\.\-_/]+  { yylval.str=strdup(yytext);  return UNQUOTED_STRING;}  
-;                   {}  
+";"                   {return SEMI;}  
 \{                   { return LEFT;}  
 \}                   { return RIGHT;}  
 =                   { return EQUAL;}  
