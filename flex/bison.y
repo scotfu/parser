@@ -64,20 +64,20 @@ HOST_KEYWORD  comments HOST_NAME_STRING  comments {$1 = (tree_t *)malloc(sizeof(
 ;
 
 key_value_pairs : key_value comments {cur->next = $1; cur = cur->next;}
-|key_value_pairs key_value comments {cur->next = $2; cur = cur->next;}
+|key_value_pairs key_value  {int tmp_lno=cur->lno;cur->next = $2; cur = cur->next; if(tmp_lno==cur->lno){yyerror();}} comments
 |/* empty */ 		 ;
 
 key_value : KEY EQUAL INT {$$ = (tree_t *)malloc(sizeof(tree_t));
-  $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=263;
+  $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=263;$$->lno=yylineno;
                    }
 |KEY EQUAL FLOAT { $$ = (tree_t *)malloc(sizeof(tree_t));
-                      $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=264
+  $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=264;$$->lno=yylineno;
                      }
 |KEY EQUAL QUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t));
-                      $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=258
+  $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=258;$$->lno=yylineno;
                    }
 |KEY EQUAL UNQUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t));
-                      $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=262
+  $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=262;$$->lno=yylineno;
                    }
 ;
 
@@ -167,8 +167,8 @@ int main(int argc, char **argv) {
 }
 
 
-void yyerror(char *s)
+void yyerror()
 {
   printf("ERR:P:%d\n", yylineno);
-
+  exit(-1);
 }

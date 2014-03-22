@@ -2,7 +2,7 @@
 #define __TREE_H__
 
 int  yylex   ();
-void yyerror (char *);
+void yyerror ();
 int yyparse();
 int yylineno;
 FILE *yyin;
@@ -13,6 +13,8 @@ typedef struct tree_st {
   char           *var_value;
   struct tree_st *next;
   int type;
+  int lno;
+
 } tree_t;
 
 //extern tree_t top, *cur;                                                                  
