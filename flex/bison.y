@@ -55,16 +55,16 @@ global_conf:
 GLOBAL_KEYWORD comments {$1 = (tree_t *)malloc(sizeof(tree_t));cur->next=$1;cur=cur->next;cur->var_name="GLOBAL";cur->var_value="";cur->type=265;} comments LEFT comments key_value_pairs comments RIGHT  comments
 ;
 
-host_confs : host_conf
-|host_confs host_conf {}
+host_confs : comments host_conf comments
+|host_confs host_conf  comments{}
 | /* empty */ 
-	    ;
+
 host_conf :  
 HOST_KEYWORD  comments HOST_NAME_STRING  comments {$1 = (tree_t *)malloc(sizeof(tree_t));cur->next=$1;cur=cur->next;cur->var_name="HOST";cur->var_value=$3;cur->type=266} LEFT comments key_value_pairs comments RIGHT comments
 ;
 
 key_value_pairs : key_value comments {cur->next = $1; cur = cur->next;}
-|key_value_pairs comments key_value comments {cur->next = $3; cur = cur->next;}
+|key_value_pairs key_value comments {cur->next = $2; cur = cur->next;}
 |/* empty */ 		 ;
 
 key_value : KEY EQUAL INT {$$ = (tree_t *)malloc(sizeof(tree_t));
