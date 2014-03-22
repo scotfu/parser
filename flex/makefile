@@ -1,10 +1,10 @@
 CC=cc
-TARGETS=bison
+TARGETS=imp1
 
 all: $(TARGETS)
 
-bison: bison.tab.o lex.yy.o
-	 $(CC) -o bison bison.tab.o lex.yy.o
+imp1: bison.tab.o lex.yy.o
+	 $(CC) -o imp1 bison.tab.o lex.yy.o
 
 bison.tab.o: tree.h bison.y
 	bison -d bison.y
