@@ -38,6 +38,47 @@ char *substring(char *string, int position, int length)
  
    return pointer;
  }
+
+char* format_string(char s[1000]) 
+ {
+   char out[1000];
+   int n=0;
+   int j=0;
+   while(s[n]!='\0')
+     {
+       if(s[n]=='\\'){
+	 n++;
+	 switch(s[n]){
+	 case 'n':
+	   out[j]='\10';
+	   break;
+	 case 'r':
+	   out[j]='\13';
+	   break;
+	 default:
+	   out[j]=s[n];
+	 }
+       }
+       else{
+       	 out[j]=s[n];
+       }
+
+       j++;
+       n++;
+     }
+
+
+   return out;
+ }
+ char *asd(char* in, char *out)
+ {
+
+
+   strcat(out, in);
+   return out;
+ }
+
+
 %}
 
 
@@ -77,7 +118,7 @@ key_value : KEY EQUAL INT {$$ = (tree_t *)malloc(sizeof(tree_t));
                      }
 |KEY EQUAL QUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t));
   $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=258;$$->lno=yylineno;
-                   }
+  printf("\"\"%s\"\"\n",$3); }
 |KEY EQUAL UNQUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t));
   $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=262;$$->lno=yylineno;
                    }
@@ -129,7 +170,7 @@ int main(int argc, char **argv) {
 	      global_flag = 1; //done
 	      printf("%s %s:\n",cur->var_name,cur->var_value);}
 	    else{
-		  char output[1000]= "    ";
+		  char output[1000]="    ";
 		  strcat(output,cur->var_name);
 		  strcat(output,":");
 		  strcat(output,cur->var_value);
@@ -143,6 +184,7 @@ int main(int argc, char **argv) {
 		    break;
 		  case 258:
 		    insert_substring(output, "Q::",5);
+		    format_string(&output);
 		    break;
 		  case 262:
 		    insert_substring(output, "S::",5);
