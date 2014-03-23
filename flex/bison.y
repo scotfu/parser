@@ -111,10 +111,12 @@ key_value : KEY EQUAL INT {$$ = (tree_t *)malloc(sizeof(tree_t));
   $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=264;$$->lno=yylineno;
                      }
 |KEY EQUAL QUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t));
-  $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=258;$$->lno=yylineno;
+   char *tmp_s; tmp_s=strcat($3,"\"\""); insert_substring(tmp_s,"\"\"",1);
+   $$->var_name=$1; $$->var_value=tmp_s; $$->next=0;$$->type=258;$$->lno=yylineno;
  }
 |KEY EQUAL UNQUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t));
   $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=262;$$->lno=yylineno;
+ 
                    }
 ;
 
