@@ -39,7 +39,7 @@ char *substring(char *string, int position, int length)
    return pointer;
  }
 
-char* format_string(char s[1000]) 
+void format_string(char s[1000]) 
  {
    char out[1000];
    int n=0;
@@ -67,16 +67,10 @@ char* format_string(char s[1000])
        n++;
      }
 
+   strcpy(s,out);
 
-   return out;
  }
- char *asd(char* in, char *out)
- {
 
-
-   strcat(out, in);
-   return out;
- }
 
 
 %}
@@ -118,7 +112,7 @@ key_value : KEY EQUAL INT {$$ = (tree_t *)malloc(sizeof(tree_t));
                      }
 |KEY EQUAL QUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t));
   $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=258;$$->lno=yylineno;
-  printf("\"\"%s\"\"\n",$3); }
+ }
 |KEY EQUAL UNQUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t));
   $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=262;$$->lno=yylineno;
                    }
