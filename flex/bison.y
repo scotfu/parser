@@ -50,10 +50,10 @@ void format_string(char s[1000])
 	 n++;
 	 switch(s[n]){
 	 case 'n':
-	   out[j]='\10';
+	   out[j]='\12';
 	   break;
 	 case 'r':
-	   out[j]='\13';
+	   out[j]='\15';
 	   break;
 	 default:
 	   out[j]=s[n];
@@ -66,7 +66,6 @@ void format_string(char s[1000])
        j++;
        n++;
      }
-
    strcpy(s,out);
 
  }
