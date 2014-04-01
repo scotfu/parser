@@ -102,21 +102,20 @@ host_c:HOST_KEYWORD comments HOST_NAME_STRING  comments {$1 = (tree_t *)malloc(s
 key_value_pairs : key_value comments {cur->next = $1; cur = cur->next;}
 |key_value_pairs key_value  {int tmp_lno=cur->lno;cur->next = $2; cur = cur->next; if(tmp_lno==cur->lno){yyerror();}} comments
 |/* empty */ 		 ;
-
 key_value : KEY EQUAL INT {$$ = (tree_t *)malloc(sizeof(tree_t));
-  $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=263;$$->lno=yylineno;
-                   }
+   $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=263;$$->lno=yylineno;
+ }
 |KEY EQUAL FLOAT { $$ = (tree_t *)malloc(sizeof(tree_t));
-  $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=264;$$->lno=yylineno;
-                     }
+   $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=264;$$->lno=yylineno;
+ }
 |KEY EQUAL QUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t));
    char *tmp_s; tmp_s=strcat($3,"\"\""); insert_substring(tmp_s,"\"\"",1);
    $$->var_name=$1; $$->var_value=tmp_s; $$->next=0;$$->type=258;$$->lno=yylineno;
  }
 |KEY EQUAL UNQUOTED_STRING {$$ = (tree_t *)malloc(sizeof(tree_t));
-  $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=262;$$->lno=yylineno;
+   $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=262;$$->lno=yylineno;
  
-                   }
+ }
 ;
 
 comments: /* empty */
@@ -126,9 +125,13 @@ comments: /* empty */
 %%
 	  
 int main(int argc, char **argv) {
-	    FILE *tmpfile = fopen(argv[1],"r");
-	    if(!tmpfile)
+ 
+  char *file_name = "test.cfg";
+  if(argc>1){file_name = argv[1];}
+  FILE *tmpfile = fopen(file_name,"r");
+           if(!tmpfile)
 	      {
+
 		printf("ERR:F:\n");
 		return -1;    
 	      }
