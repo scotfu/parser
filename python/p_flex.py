@@ -14,6 +14,13 @@ EQUAL = 8
 
 
 
+class FlexException(Exception):
+    pass
+
+class NullException(Exception):
+    pass
+
+
 class Node:
     def __init__(self,type,value=None):
         self.type = type
@@ -22,11 +29,13 @@ class Node:
     def __repr__(self):
         return str(self.type) + ':' +str(self.value)
     
-def quoted_string(str): # pass anything after a "
-    n = 0
+def quoted_string(str): # pass anything start from " "
+    n = 1
     while True:
-        if str[n] != '"':
-            n +=1
+        if str[n] == '\n':
+            raise FlexException
+        elif str[n] != '"':
+            n += 1
         else:
             if str[n-1] == '\\':
                 n += 1
@@ -42,9 +51,10 @@ def comment(str):
 
 def tokenize(str):
     tokens = []
+
     # test for null
     if '\0' in str:
-        raise 'Found null'
+        raise NullException
     while len(str):
         val = ''
         if str[0] == '"':#take care of quoted strings
@@ -100,4 +110,8 @@ if __name__ == '__main__':
 
     data = open(file_name).read()
     import pprint
-    pprint.pprint(tokenize(data))
+    try:
+        pprint.pprint(tokenize(data))
+    except FlexException,lineno:
+        print 'E:L:%d'%lineno
+        
