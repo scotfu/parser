@@ -20,6 +20,8 @@ class FlexException(Exception):
 class NullException(Exception):
     pass
 
+class IllegalException(Exception):
+    pass
 
 class Node:
     def __init__(self,type,value=None):
@@ -59,7 +61,6 @@ class Tokenizer:
         if '\0' in self.data_str:
             raise NullException
         while len(self.data_str):
-            print len(self.data_str)
             val = ''
             if self.data_str[0] == '"':#take care of quoted self.data_strings
                 val = self.quoted_string()
@@ -101,8 +102,9 @@ class Tokenizer:
                         self.tokens.append(Node(STRING,val))
                         break
             else:
-                print 'Warning, invalide characters',self.data_str[0],self.lineno
-                self.data_str = self.data_str[1:]
+                raise IllegalException
+                #print 'Warning, invalide characters',self.data_str[0],self.lineno
+                #self.data_str = self.data_str[1:]
 
 if __name__ == '__main__':
     file_name = 'test.cfg'
@@ -118,5 +120,7 @@ if __name__ == '__main__':
         tokenizer = Tokenizer(data)
         tokenizer.tokenize()
     except FlexException:
+        print 'E:L:%d'%tokenizer.lineno
+    except IllegalException:
         print 'E:L:%d'%tokenizer.lineno
         
