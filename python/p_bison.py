@@ -160,6 +160,7 @@ class Parser:
                     curnode.c3 = Node(node_type, self.consume_token().value)
                 elif self.tokens[0].type == QUOTED_STRING:
                     curnode.c3 = self.consume_token()
+                    curnode.c3.value = format_quoted_string(curnode.c3.value)
                     prefix = 'Q::'
                 else:
     				raise Exception
@@ -184,7 +185,24 @@ class Parser:
 
 def remove_comments(tokens):
     return [token for token in tokens if token.type != COMMENT]
-            
+
+def format_quoted_string(string):
+    out =[]
+    length = len(string)
+    i = 0
+    while i < length-1:
+        if string[i] == '\\':
+            i += 1
+            if string[i] == 'n':
+                out.append('\12')
+            elif string[i] == 'r':
+                out.append('\15')
+            else:
+                out.append(string[i])
+        else:
+            out.append(string[i])
+        i += 1
+    return '""' + ''.join(out) + '"""'    
 if __name__ == '__main__':
     file_name = 'test.cfg'
     if len(sys.argv) > 1:

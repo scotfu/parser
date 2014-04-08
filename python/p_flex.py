@@ -91,7 +91,7 @@ class Tokenizer:
                     val = self.data_str[:n]
                     break
         self.data_str = self.data_str[n:]
-        return '""'+val+'""'        
+        return val
 
     def comment(self):
         while self.data_str[0] != '\n':
