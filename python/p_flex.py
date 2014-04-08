@@ -2,22 +2,8 @@
 import os
 import sys
 
-#Types for nodes
-N_CONF = 101
-N_GLOBAL = 102
-KV_PAIRS = 104
-KEY = 105
-VALUE = 106
-GLOBAL_KEYWORD = 107
-N_HOSTS =103
-COMMENT = 1
-QUOTED_STRING = 2
-STRING = 3
-LEFT = 4
-RIGHT = 5
-SEMI = 6
-NEW_LINE = 7
-EQUAL = 8
+from constants import *
+
 
 
 
@@ -48,12 +34,16 @@ class Node:
 
         if self.type == GLOBAL_KEYWORD:
             thisnodeout.append('GLOBAL:\n')
+        if self.type == HOST_KEYWORD:
+            thisnodeout.append('HOST ')
+        if self.type == HOST_NAME:
+            thisnodeout.append(self.value +':\n')
         if self.type == STRING:
             thisnodeout.append(self.value)
         if self.type == KEY:
             thisnodeout.append('    '+self.value)
         if self.type == VALUE:
-            thisnodeout.append(self.value)
+            thisnodeout.append(self.value+'\n')
         if self.type == EQUAL:
             thisnodeout.append(':')
 
@@ -80,7 +70,7 @@ class Tokenizer:
         self.lineno = 1
         self.tokens = []    
 
-    def quoted_string(self): # pass anything start from " "
+    def quoted_string(self): # "" are needed
         n = 1
         while True:
             if self.data_str[n] == '\n':
@@ -91,10 +81,11 @@ class Tokenizer:
                 if self.data_str[n-1] == '\\':
                     n += 1
                 else:
+                    n += 1
                     val = self.data_str[:n]
                     break
-        self.data_str = self.data_str[n+1:]
-        return val        
+        self.data_str = self.data_str[n:]
+        return '""'+val+'""'        
 
     def comment(self):
         while self.data_str[0] != '\n':
