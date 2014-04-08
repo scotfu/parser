@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import os
 import sys
+import re
+
 
 from constants import *
 
@@ -141,6 +143,7 @@ class Tokenizer:
                 #self.data_str = self.data_str[1:]
 
 if __name__ == '__main__':
+
     file_name = 'test.cfg'
     if len(sys.argv) > 1:
         file_name = sys.argv[1]
