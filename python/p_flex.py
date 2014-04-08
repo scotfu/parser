@@ -3,6 +3,13 @@ import os
 import sys
 
 #Types for nodes
+N_CONF = 101
+N_GLOBAL = 102
+KV_PAIRS = 104
+KEY = 105
+VALUE = 106
+GLOBAL_KEYWORD = 107
+N_HOSTS =103
 COMMENT = 1
 QUOTED_STRING = 2
 STRING = 3
@@ -11,6 +18,7 @@ RIGHT = 5
 SEMI = 6
 NEW_LINE = 7
 EQUAL = 8
+
 
 
 
@@ -27,7 +35,42 @@ class Node:
     def __init__(self,type,value=None):
         self.type = type
         self.value = value
+        self.c1 = None
+        self.c2 = None
+        self.c3 = None
+        self.c4 = None
+        self.c5 = None
+        self.c6 = None
 
+    def print_node(self,thisnodeout=[]):
+#        print str(self.type) + self.value
+#        print 'this is children of this node'
+
+        if self.type == GLOBAL_KEYWORD:
+            thisnodeout.append('GLOBAL:\n')
+        if self.type == STRING:
+            thisnodeout.append(self.value)
+        if self.type == KEY:
+            thisnodeout.append('    '+self.value)
+        if self.type == VALUE:
+            thisnodeout.append(self.value)
+        if self.type == EQUAL:
+            thisnodeout.append(':')
+
+
+        if self.c1:
+            self.c1.print_node(thisnodeout)
+        if self.c2:
+            self.c2.print_node(thisnodeout)
+        if self.c3:
+            self.c3.print_node(thisnodeout)
+        if self.c4:
+            self.c4.print_node(thisnodeout)
+        if self.c5:
+            self.c5.print_node(thisnodeout)
+        if self.c6:
+            self.c6.print_node(thisnodeout)
+            
     def __repr__(self):
         return str(self.type) + ':' +str(self.value)
 
@@ -67,7 +110,7 @@ class Tokenizer:
                 self.tokens.append(Node(QUOTED_STRING,val))
             elif self.data_str[0] == '#':#take care of comments, \n extracted from comments
                 self.comment()
-                self.tokens.append(Node(COMMENT))
+                self.tokens.append(Node(COMMENT,'comment'))
             elif self.data_str[0] == '=':#equal sign
                 self.data_str = self.data_str[1:]
                 val = '='
