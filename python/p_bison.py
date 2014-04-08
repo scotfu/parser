@@ -6,6 +6,9 @@ import os
 from p_flex import Tokenizer, Node, FlexException, NullException, IllegalException
 from constants import *
 
+class EndEarlyException(Exception):
+    pass
+
 # comments are skipped,just leave \n
 class Parser:
     def parse(self,tokens):
@@ -27,7 +30,7 @@ class Parser:
 
     def conf(self, curnode):
 		# Derive <global>
-        curnode.c1 = Node(N_GLOBAL,'global')
+        curnode.c1 = Node(N_GLOBAL)
         self.global_conf(curnode.c1)
         # Derive <hosts>
         curnode.c2 = Node(N_HOSTS)
@@ -35,7 +38,8 @@ class Parser:
 
     def global_conf(self, curnode):
         global_flag = True
-    	while self.tokens[0].type == NEW_LINE:
+        #clean \n before meet a global
+        while self.tokens[0].type == NEW_LINE:
     		self.consume_token()
 
         if self.tokens[0].type == STRING and self.tokens[0].value == 'global':
@@ -43,17 +47,17 @@ class Parser:
             curnode.c1 = Node(GLOBAL_KEYWORD,'GLOBAL')
         else:
             print "Expected a 'global' name and didn't get it!"
-            raise Exception
+            raise Exception,self.tokens[0].lineno
 
         if not len(self.tokens):
             print "Premature end of file, expected ="
-            raise Exception
+            raise Exception,self.tokens[0].lineno
 
         if self.tokens[0].type == LEFT:
             curnode.c2 = self.consume_token()
         else:
             print "Expected an { sign and didn't get it!"
-            raise Exception
+            raise Exception,self.tokens[0].lineno
 
         curnode.c3 = Node(KV_PAIRS)
         self.key_value_pairs(curnode.c3,global_flag)
@@ -63,8 +67,9 @@ class Parser:
             curnode.c4 = self.consume_token()
         else:
             print "Expected an } sign and didn't get it!"
-            raise Exception
-        if self.tokens[0].type == SEMI:
+            raise Exception,self.tokens[0].lineno
+
+        if self.tokens and self.tokens[0].type == SEMI:
             curnode.c5 = self.consume_token()
         
         print "gobal is done"
@@ -94,10 +99,10 @@ class Parser:
             curnode.c1 = Node(HOST_KEYWORD,'HOST')
         else:
             print "Expected a 'host' name and didn't get it!"
-            raise Exception
+            raise Exception,self.tokens[0].lineno
         if not len(self.tokens):
             print "Premature end of file, expected ="
-            raise Exception
+            raise Exception,self.tokens[0].lineno
 
     	if self.tokens[0].type == STRING and re.search(r'^[a-zA-Z_0-9\._\-]*$',self.tokens[0].value):
             curnode.c2 = Node(HOST_NAME,self.consume_token().value)
@@ -106,7 +111,7 @@ class Parser:
             curnode.c3 = self.consume_token()
         else:
             print "Expected an { sign and didn't get it!"
-            raise Exception
+            raise Exception,self.tokens[0].lineno
 
         curnode.c4 = Node(KV_PAIRS,'A PAIR')
         self.key_value_pairs(curnode.c3)
@@ -116,15 +121,20 @@ class Parser:
             curnode.c5 = self.consume_token()
         else:
             print "Expected an } sign and didn't get it!"
-            raise Exception
-        if self.tokens[0].type == SEMI:
+            raise Exception,self.tokens[0].lineno
+        if self.tokens and self.tokens[0].type == SEMI:
             curnode.c6 = self.consume_token()
         
         print "host is done"
         
     def key_value_pairs(self, curnode,global_flag=False):
+        if not len(self.tokens):
+            raise EndEarlyException
+
     	while self.tokens[0].type == NEW_LINE:
-    		self.consume_token()
+            self.consume_token()
+            if not len(self.tokens):
+                raise EndEarlyException
         if self.tokens[0].type == RIGHT:
             return
         else:
@@ -136,8 +146,15 @@ class Parser:
     #a broad string, then narrow down and check here
     def key_value_pair(self, curnode,global_flag=False):
     	#skip all the pre new line
-    	while self.tokens[0].type == NEW_LINE:
-    		self.consume_token()
+        done = False
+        if not len(self.tokens):
+            raise EndEarlyException
+
+        while self.tokens[0].type == NEW_LINE:
+            self.consume_token()
+            if not len(self.tokens):
+                raise EndEarlyException
+
     	if self.tokens[0].type == STRING and re.search(r'^[a-zA-Z_][a-zA-Z_0-9]*$',self.tokens[0].value):#key
             curnode.c1 = Node(KEY,self.consume_token().value)
             if global_flag:
@@ -156,32 +173,41 @@ class Parser:
                         prefix = 'S::'
                     else:
                         print 'Illegal Value',self.tokens[0]
-                        raise Exception
+                        raise Exception,self.tokens[0].lineno
                     curnode.c3 = Node(node_type, self.consume_token().value)
                 elif self.tokens[0].type == QUOTED_STRING:
                     curnode.c3 = self.consume_token()
                     curnode.c3.value = format_quoted_string(curnode.c3.value)
                     prefix = 'Q::'
                 else:
-    				raise Exception
+                    print 'Illegal Value',self.tokens[0]
+                    raise Exception,self.tokens[0].lineno
                 #overwite
                 if curnode.c1.value in self.global_keys and not global_flag:
                     prefix = prefix[:2] +'O' + prefix[2:]
                 curnode.c1.value = '    ' + prefix + curnode.c1.value
 
             else:
-    			raise Exception
-    				
+    			raise Exception,self.tokens[0].lineno
+
+            if self.tokens:
+                if self.tokens[0].type == NEW_LINE:
+                    self.consume_token()
+                elif self.tokens[0].type == RIGHT:
+                    pass
+                else:
+                    print 'No newline or }'
+                    raise Exception,self.tokens[0].lineno
+            else:
+                raise EndEarlyException
     	elif self.tokens[0].type == RIGHT :
     		return 
 
         else:
             print "Expected a pair and didn't get it!"
-            raise Exception
+            raise Exception,self.tokens[0].lineno
 
-        if not len(self.tokens):
-            print "Premature end of file, expected ="
-            raise Exception
+
 
 def remove_comments(tokens):
     return [token for token in tokens if token.type != COMMENT]
@@ -216,13 +242,17 @@ if __name__ == '__main__':
     try:
         tokenizer = Tokenizer(data)
         tokenizer.tokenize()
-    except FlexException:
-        print 'E:L:%d'%tokenizer.lineno
-    except IllegalException:
-        print 'E:L:%d'%tokenizer.lineno
-    
-    p = Parser()
-    tokens = remove_comments(tokenizer.tokens)
-    print tokens
-    p.parse(tokens)
-    p.print_tree()
+    except (FlexException, IllegalException, NullException):
+        print 'ERR:L:%d'%tokenizer.lineno
+        exit()
+    try:    
+        p = Parser()
+        tokens = remove_comments(tokenizer.tokens)
+        last_line = tokens[-1].lineno
+        p.parse(tokens)
+
+        p.print_tree()
+    except EndEarlyException:
+        print 'ERR:P:%s'%last_line
+    except Exception,e:
+        print 'ERR:P:%s'%e

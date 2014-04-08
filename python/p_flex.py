@@ -20,9 +20,10 @@ class IllegalException(Exception):
     pass
 
 class Node:
-    def __init__(self,type,value=None):
+    def __init__(self,type,value=None,lineno=-1):
         self.type = type
         self.value = value
+        self.lineno = lineno
         self.c1 = None
         self.c2 = None
         self.c3 = None
@@ -104,31 +105,31 @@ class Tokenizer:
             val = ''
             if self.data_str[0] == '"':#take care of quoted self.data_strings
                 val = self.quoted_string()
-                self.tokens.append(Node(QUOTED_STRING,val))
+                self.tokens.append(Node(QUOTED_STRING,val,self.lineno))
             elif self.data_str[0] == '#':#take care of comments, \n extracted from comments
                 self.comment()
-                self.tokens.append(Node(COMMENT,'comment'))
+                self.tokens.append(Node(COMMENT,'comment',self.lineno))
             elif self.data_str[0] == '=':#equal sign
                 self.data_str = self.data_str[1:]
                 val = '='
-                self.tokens.append(Node(EQUAL,val))
+                self.tokens.append(Node(EQUAL,val,self.lineno))
             elif self.data_str[0] == '{':#right
                 self.data_str = self.data_str[1:]
                 val = '{'
-                self.tokens.append(Node(LEFT,val))
+                self.tokens.append(Node(LEFT,val,self.lineno))
             elif self.data_str[0] == '}':#left
                 self.data_str = self.data_str[1:]
                 val = '}'
-                self.tokens.append(Node(RIGHT,val))
+                self.tokens.append(Node(RIGHT,val,self.lineno))
             elif self.data_str[0] == ';':#semicolon
                 self.data_str = self.data_str[1:]
                 val = ';'
-                self.tokens.append(Node(SEMI,val))
+                self.tokens.append(Node(SEMI,val,self.lineno))
             elif self.data_str[0] == '\n':#new line
                 self.data_str = self.data_str[1:]
                 val = '\n'
+                self.tokens.append(Node(NEW_LINE,val,self.lineno))
                 self.lineno += 1
-                self.tokens.append(Node(NEW_LINE,val))
             elif self.data_str[0] == ' ':#space bug?
                 self.data_str = self.data_str[1:]
             elif self.data_str[0].isalpha() or self.data_str[0].isdigit() or (self.data_str[0] in ['-','_','.','/']):#any other self.data_string,etc.key,value,host,gloal
@@ -139,7 +140,7 @@ class Tokenizer:
                         val += self.data_str[0]
                         self.data_str = self.data_str[1:]
                     else:
-                        self.tokens.append(Node(STRING,val))
+                        self.tokens.append(Node(STRING,val,self.lineno))
                         break
             else:
                 raise IllegalException
@@ -160,8 +161,6 @@ if __name__ == '__main__':
     try:
         tokenizer = Tokenizer(data)
         tokenizer.tokenize()
-    except FlexException:
-        print 'E:L:%d'%tokenizer.lineno
-    except IllegalException:
+    except (FlexException, IllegalException, NullException):
         print 'E:L:%d'%tokenizer.lineno
         
