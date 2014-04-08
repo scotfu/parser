@@ -6,13 +6,13 @@ import os
 from p_flex import Tokenizer, Node, FlexException, NullException, IllegalException
 from constants import *
 
-
 # comments are skipped,just leave \n
 class Parser:
     def parse(self,tokens):
-		self.tokens = tokens
-		self.root = Node(N_CONF)
-		self.conf(self.root)
+        self.tokens = tokens
+        self.global_keys = []
+        self.root = Node(N_CONF)
+        self.conf(self.root)
 
 
     def print_tree(self):
@@ -34,6 +34,7 @@ class Parser:
         self.host_confs(curnode.c2)
 
     def global_conf(self, curnode):
+        global_flag = True
     	while self.tokens[0].type == NEW_LINE:
     		self.consume_token()
 
@@ -55,7 +56,7 @@ class Parser:
             raise Exception
 
         curnode.c3 = Node(KV_PAIRS)
-        self.key_value_pairs(curnode.c3)
+        self.key_value_pairs(curnode.c3,global_flag)
 
 
         if self.tokens[0].type == RIGHT:
@@ -72,7 +73,6 @@ class Parser:
     def host_confs(self, curnode):
         if not len(self.tokens):
             return
-        print self.tokens[0]
         while self.tokens[0].type == NEW_LINE:
             self.consume_token()
             if not len(self.tokens):
@@ -122,21 +122,52 @@ class Parser:
         
         print "host is done"
         
-    def key_value_pairs(self, curnode):
-        pass
-        
-    def key_value_pair(self, curnode):
+    def key_value_pairs(self, curnode,global_flag=False):
+    	while self.tokens[0].type == NEW_LINE:
+    		self.consume_token()
+        if self.tokens[0].type == RIGHT:
+            return
+        else:
+            curnode.c1 = Node(KV_PAIR)
+            self.key_value_pair(curnode.c1,global_flag)
+            curnode.c2 = Node(KV_PAIRS)
+            self.key_value_pairs(curnode.c2,global_flag)
+
+    #a broad string, then narrow down and check here
+    def key_value_pair(self, curnode,global_flag=False):
     	#skip all the pre new line
     	while self.tokens[0].type == NEW_LINE:
     		self.consume_token()
-    	if self.tokens[0].type == STRING and re.search(r'^[a-zA-Z_][a-zA-Z_0-9]*$',self.tokens[0].value):
+    	if self.tokens[0].type == STRING and re.search(r'^[a-zA-Z_][a-zA-Z_0-9]*$',self.tokens[0].value):#key
             curnode.c1 = Node(KEY,self.consume_token().value)
+            if global_flag:
+                self.global_keys.append(curnode.c1.value)
             if self.tokens[0].type == EQUAL:
                 curnode.c2 = self.consume_token()	
-                if self.tokens[0].type == STRING or self.tokens[0].type == QUOTED_STRING:
-    				curnode.c3 = Node(VALUE, self.consume_token().value)
+                if self.tokens[0].type == STRING:
+                    if re.search(r'^[0-9]*$', self.tokens[0].value):
+                        node_type = INT
+                        prefix = 'I::'
+                    elif re.search(r'^[0-9]+\.[0-9]*$', self.tokens[0].value):
+                        node_type = FLOAT
+                        prefix = 'F::'
+                    elif re.search(r'^[a-zA-Z/][a-z-A-Z0-9\-/\._]*$', self.tokens[0].value):
+                        node_type = STRING
+                        prefix = 'S::'
+                    else:
+                        print 'Illegal Value',self.tokens[0]
+                        raise Exception
+                    curnode.c3 = Node(node_type, self.consume_token().value)
+                elif self.tokens[0].type == QUOTED_STRING:
+                    curnode.c3 = self.consume_token()
+                    prefix = 'Q::'
                 else:
     				raise Exception
+                #overwite
+                if curnode.c1.value in self.global_keys and not global_flag:
+                    prefix = prefix[:2] +'O' + prefix[2:]
+                curnode.c1.value = '    ' + prefix + curnode.c1.value
+
             else:
     			raise Exception
     				
@@ -151,6 +182,8 @@ class Parser:
             print "Premature end of file, expected ="
             raise Exception
 
+def remove_comments(tokens):
+    return [token for token in tokens if token.type != COMMENT]
             
 if __name__ == '__main__':
     file_name = 'test.cfg'
@@ -169,8 +202,9 @@ if __name__ == '__main__':
         print 'E:L:%d'%tokenizer.lineno
     except IllegalException:
         print 'E:L:%d'%tokenizer.lineno
-    print tokenizer.tokens
     
     p = Parser()
-    p.parse(tokenizer.tokens)
+    tokens = remove_comments(tokenizer.tokens)
+    print tokens
+    p.parse(tokens)
     p.print_tree()

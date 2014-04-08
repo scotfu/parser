@@ -40,14 +40,18 @@ class Node:
             thisnodeout.append('HOST ')
         if self.type == HOST_NAME:
             thisnodeout.append(self.value +':\n')
-        if self.type == STRING:
-            thisnodeout.append(self.value)
         if self.type == KEY:
-            thisnodeout.append('    '+self.value)
-        if self.type == VALUE:
+            thisnodeout.append(self.value)
+        if self.type == STRING:
+            thisnodeout.append(self.value+'\n')
+        if self.type == INT:
+            thisnodeout.append(self.value+'\n')
+        if self.type == FLOAT:
             thisnodeout.append(self.value+'\n')
         if self.type == EQUAL:
             thisnodeout.append(':')
+        if self.type == QUOTED_STRING:
+            thisnodeout.append(self.value + '\n')
 
 
         if self.c1:
