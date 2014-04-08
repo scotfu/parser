@@ -72,9 +72,11 @@ class Parser:
     def host_confs(self, curnode):
         if not len(self.tokens):
             return
+        print self.tokens[0]
         while self.tokens[0].type == NEW_LINE:
-    		self.consume_token()
-
+            self.consume_token()
+            if not len(self.tokens):
+                return
         curnode.c1 = Node(N_HOST)
         self.host_conf(curnode.c1)
         curnode.c2 = Node(N_HOSTS)
@@ -120,9 +122,10 @@ class Parser:
         
         print "host is done"
         
-
-        
     def key_value_pairs(self, curnode):
+        pass
+        
+    def key_value_pair(self, curnode):
     	#skip all the pre new line
     	while self.tokens[0].type == NEW_LINE:
     		self.consume_token()
