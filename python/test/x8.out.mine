@@ -1,0 +1,3 @@
+GLOBAL:
+HOST foo:
+    I::x:1

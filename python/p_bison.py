@@ -20,17 +20,6 @@ def errorRecovery(func):
     return func_wrapper         
 
 
-
-class ErrorRecovery(object):
-    def __init__(self, f, *args, **kwargs):
-        print kwargs,args
-        print "inside myDecorator.__init__()"
-        f(**kwargs) # Prove that function definition has completed
-    def __call__(self):
-        print "inside myDecorator.__call__()"
-# comments are skipped,just leave \n
-
-
 class Parser:
     def parse(self,tokens):
         self.tokens = tokens
@@ -79,49 +68,50 @@ class Parser:
         curnode.c2 = Node(N_HOSTS)
         self.host_confs(curnode.c2)
 
+    def clean_newline(self):
+        while self.tokens and (self.tokens[0].type == NEW_LINE):
+            self.consume_token()
+
     @errorRecovery    
     def global_conf(self, curnode):
         global_flag = True
-        #clean \n before meet a global
-        while self.tokens and (self.tokens[0].type == NEW_LINE):
-    		self.consume_token()
 
+        self.clean_newline()
         if self.tokens and (self.tokens[0].type == STRING) and (self.tokens[0].value == 'global'):
             self.consume_token()
             curnode.c1 = Node(GLOBAL_KEYWORD,'GLOBAL')
         else:
-            print "Expected a 'global' name and didn't get it!"
+            #print "Expected a 'global' name and didn't get it!"
             raise PException,self.tokens[0].lineno
 
-
+        self.clean_newline()
         if  self.tokens and self.tokens[0].type == LEFT:
             curnode.c2 = self.consume_token()
         else:
-            print "Expected an { sign and didn't get it!"
+            #print "Expected an { sign and didn't get it!"
             raise PException,self.tokens[0].lineno
 
+        self.clean_newline()
         curnode.c3 = Node(KV_PAIRS)
         self.key_value_pairs(curnode.c3,global_flag)
-
-
+        
+        self.clean_newline()
         if self.tokens and self.tokens[0].type == RIGHT:
             curnode.c4 = self.consume_token()
         else:
-            print "Expected an } sign and didn't get it!"
+            #print "Expected an } sign and didn't get it!"
             raise PException,self.tokens[0].lineno
 
+#        self.clean_newline()
         if self.tokens and self.tokens[0].type == SEMI:#optional,so no else
             curnode.c5 = self.consume_token()
 #        self.global_conf_num = 1 TO BE DELETED
-        print 'global is done'
+        #print 'global is done'
 
     def host_confs(self, curnode):
+        self.clean_newline()
         if not len(self.tokens):
             return
-        while self.tokens[0].type == NEW_LINE:
-            self.consume_token()
-            if not len(self.tokens):
-                return
         curnode.c1 = Node(N_HOST)
         self.host_conf(curnode.c1)
         curnode.c2 = Node(N_HOSTS)
@@ -130,45 +120,52 @@ class Parser:
 
     @errorRecovery
     def host_conf(self, curnode):
-
-        while self.tokens and self.tokens[0].type == NEW_LINE:
-    		self.consume_token()
+        self.clean_newline()
 
         if  self.tokens and (self.tokens[0].type == STRING) and (self.tokens[0].value == 'host'):
             self.consume_token()
             curnode.c1 = Node(HOST_KEYWORD,'HOST')
         else:
-            print "Expected a 'host' name and didn't get it!"
+            #print "Expected a 'host' name and didn't get it!"
             raise PException,self.tokens[0].lineno
 
+        self.clean_newline()
         if self.tokens and self.tokens[0].type == STRING and re.search(r'^[a-zA-Z_0-9\._\-]*$',self.tokens[0].value):
             curnode.c2 = Node(HOST_NAME,self.consume_token().value)
-            
+        else:
+            #print 'No host name'
+            raise PException,self.tokens[0].lineno
+
+        self.clean_newline()            
         if self.tokens and self.tokens[0].type == LEFT:
             curnode.c3 = self.consume_token()
         else:
-            print "Expected an { sign and didn't get it!"
+            #print "Expected an { sign and didn't get it!"
             raise PException,self.tokens[0].lineno
 
+
+        self.clean_newline()
         curnode.c4 = Node(KV_PAIRS,'A PAIR')
         self.key_value_pairs(curnode.c3)
 
 
+        self.clean_newline()
         if self.tokens and self.tokens[0].type == RIGHT:
             curnode.c5 = self.consume_token()
         else:
-            print "Expected an } sign and didn't get it!"
+            #print "Expected an } sign and didn't get it!"
             raise PException,self.tokens[0].lineno
 
+            
         if self.tokens and self.tokens[0].type == SEMI:
             curnode.c6 = self.consume_token()
         self.host_conf_num += 1
-        print "host is done"
+        #print "host is done"
         
-    def key_value_pairs(self, curnode,global_flag=False):
-
-        while self.tokens and self.tokens[0].type == NEW_LINE:
-            self.consume_token()
+    def key_value_pairs(self, curnode,global_flag=False):#todo better logic
+        self.clean_newline()
+        if not len(self.tokens):
+            return
 
         if self.tokens and self.tokens[0].type == RIGHT:
             return
@@ -182,9 +179,7 @@ class Parser:
     def key_value_pair(self, curnode,global_flag=False):
     	#skip all the pre new line
         done = False
-
-        while self.tokens and  self.tokens[0].type == NEW_LINE:
-            self.consume_token()
+        self.clean_newline()
 
     	if  self.tokens and self.tokens[0].type == STRING and re.search(r'^[a-zA-Z_][a-zA-Z_0-9]*$',self.tokens[0].value):#key
             curnode.c1 = Node(KEY,self.consume_token().value)
@@ -203,7 +198,7 @@ class Parser:
                         node_type = STRING
                         prefix = 'S::'
                     else:
-                        print 'Illegal String Value',self.tokens[0].lineno
+                        #print 'Illegal String Value',self.tokens[0].lineno
                         raise PException,self.tokens[0].lineno
                     curnode.c3 = Node(node_type, self.consume_token().value)
                 elif self.tokens and self.tokens[0].type == QUOTED_STRING:
@@ -211,7 +206,7 @@ class Parser:
                     curnode.c3.value = format_quoted_string(curnode.c3.value)
                     prefix = 'Q::'
                 else:
-                    print 'Illegal Value',self.tokens[0]
+                    #print 'Illegal Value',self.tokens[0]
                     raise PException,self.tokens[0].lineno
                 #overwite
                 if curnode.c1.value in self.global_keys and not global_flag:
@@ -227,7 +222,7 @@ class Parser:
                 elif self.tokens[0].type == RIGHT:
                     pass
                 else:
-                    print 'No newline or }'
+                    #print 'No newline or }'
                     raise PException,self.tokens[0].lineno
             else:
                 raise PException
@@ -235,9 +230,8 @@ class Parser:
     		return 
 
         else:
-            print "Expected a pair and didn't get it!"
+            #print "Expected a pair and didn't get it!"
             raise PException,self.tokens[0].lineno
-
 
 
 def remove_comments(tokens):
@@ -262,7 +256,7 @@ def format_quoted_string(string):
     return '""' + ''.join(out) + '"""'    
 
 
-if __name__ == '__main__':
+def run():
     file_name = 'test.cfg'
     error = ''
     if len(sys.argv) > 1:
@@ -270,9 +264,8 @@ if __name__ == '__main__':
     if not os.path.isfile(file_name):
         sys.stdout.write('ERR:F:\n')
         exit()
-
+        
     data = open(file_name).read()
-    import pprint
     try:
         tokenizer = Tokenizer(data)
         tokenizer.tokenize()
@@ -289,3 +282,5 @@ if __name__ == '__main__':
     finally:
         p.print_tree()
         sys.stdout.write(error)
+if __name__ == '__main__':
+    run()
