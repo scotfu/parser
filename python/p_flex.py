@@ -31,42 +31,31 @@ class Node:
         self.c5 = None
         self.c6 = None
 
-    def print_node(self,thisnodeout=[]):
+    def error_handler(self):
+        pass
+        
+    def get_node(self,nodes=[]):
 #        print str(self.type) + self.value
 #        print 'this is children of this node'
 
-        if self.type == GLOBAL_KEYWORD:
-            thisnodeout.append('GLOBAL:\n')
-        if self.type == HOST_KEYWORD:
-            thisnodeout.append('HOST ')
-        if self.type == HOST_NAME:
-            thisnodeout.append(self.value +':\n')
-        if self.type == KEY:
-            thisnodeout.append(self.value)
-        if self.type == STRING:
-            thisnodeout.append(self.value+'\n')
-        if self.type == INT:
-            thisnodeout.append(self.value+'\n')
-        if self.type == FLOAT:
-            thisnodeout.append(self.value+'\n')
-        if self.type == EQUAL:
-            thisnodeout.append(':')
-        if self.type == QUOTED_STRING:
-            thisnodeout.append(self.value + '\n')
-
-
+        if self.type in [GLOBAL_KEYWORD, HOST_KEYWORD, HOST_NAME, KEY, STRING, INT, FLOAT, EQUAL, QUOTED_STRING, RIGHT, SEMI, LEFT]:
+            nodes.append(self)
+        if self.type == ERROR:
+            while nodes and nodes[-1].type != RIGHT:
+                nodes.pop(-1)
+            return     
         if self.c1:
-            self.c1.print_node(thisnodeout)
+            self.c1.get_node(nodes)
         if self.c2:
-            self.c2.print_node(thisnodeout)
+            self.c2.get_node(nodes)
         if self.c3:
-            self.c3.print_node(thisnodeout)
+            self.c3.get_node(nodes)
         if self.c4:
-            self.c4.print_node(thisnodeout)
+            self.c4.get_node(nodes)
         if self.c5:
-            self.c5.print_node(thisnodeout)
+            self.c5.get_node(nodes)
         if self.c6:
-            self.c6.print_node(thisnodeout)
+            self.c6.get_node(nodes)
             
     def __repr__(self):
         return str(self.type) + ':' +str(self.value)
@@ -147,6 +136,7 @@ class Tokenizer:
                 #print 'Warning, invalide characters',self.data_str[0],self.lineno
                 #self.data_str = self.data_str[1:]
 
+                
 if __name__ == '__main__':
 
     file_name = 'test.cfg'
