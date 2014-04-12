@@ -58,7 +58,7 @@ class Node:
             self.c6.get_node(nodes)
             
     def __repr__(self):
-        return str(self.type) + ':' +str(self.value)
+        return str(self.type) + ':' +str(self.value)+ ':' + str(self.lineno)
 
 class Tokenizer:
     def __init__(self,data_str):
@@ -127,7 +127,7 @@ class Tokenizer:
                 val = self.data_str[0]
                 self.data_str = self.data_str[1:]
                 while len(self.data_str):
-                    if self.data_str[0] not in [' ','{','}',';','=','\n']:
+                    if self.data_str[0] not in [' ','{','}',';','=','\n','#']:
                         val += self.data_str[0]
                         self.data_str = self.data_str[1:]
                     else:
