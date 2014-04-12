@@ -24,8 +24,6 @@ class Parser:
     def parse(self,tokens):
         self.tokens = tokens
         self.global_keys = []
-        self.global_conf_num = 0
-        self.host_conf_num = 0
         self.root = Node(N_CONF)
         self.conf(self.root)
 
@@ -159,7 +157,6 @@ class Parser:
             
         if self.tokens and self.tokens[0].type == SEMI:
             curnode.c6 = self.consume_token()
-        self.host_conf_num += 1
         #print "host is done"
         
     def key_value_pairs(self, curnode,global_flag=False):#todo better logic
