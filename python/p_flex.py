@@ -71,6 +71,8 @@ class Tokenizer:
         while True:
             if self.data_str[n] == '\n':
                 raise FlexException
+            elif ord(self.data_str[n]) > 127 or self.data_str[n] == '#':#only ascii except #
+                raise FlexException
             elif self.data_str[n] != '"':
                 n += 1
             else:
@@ -121,7 +123,7 @@ class Tokenizer:
                 self.lineno += 1
             elif self.data_str[0] == ' ':#space bug?
                 self.data_str = self.data_str[1:]
-            elif self.data_str[0].isalpha() or self.data_str[0].isdigit() or (self.data_str[0] in ['-','_','.','/']):#any other self.data_string,etc.key,value,host,gloal
+            elif self.data_str[0].isalpha() or self.data_str[0].isdigit() or (self.data_str[0] in ['+','-','_','.','/']):#any other self.data_string,etc.key,value,host,gloal,signed number
                 val = self.data_str[0]
                 self.data_str = self.data_str[1:]
                 while len(self.data_str):

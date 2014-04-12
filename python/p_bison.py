@@ -188,10 +188,10 @@ class Parser:
             if self.tokens and self.tokens[0].type == EQUAL:
                 curnode.c2 = self.consume_token()	
                 if  self.tokens and self.tokens[0].type == STRING:
-                    if re.search(r'^[0-9]*$', self.tokens[0].value):
+                    if re.search(r'^[+-]?[0-9]+$', self.tokens[0].value):
                         node_type = INT
                         prefix = 'I::'
-                    elif re.search(r'^[0-9]+\.[0-9]*$', self.tokens[0].value):
+                    elif re.search(r'^[+-]?[0-9]+\.[0-9]*$', self.tokens[0].value):
                         node_type = FLOAT
                         prefix = 'F::'
                     elif re.search(r'^[a-zA-Z/][a-z-A-Z0-9\-/\._]*$', self.tokens[0].value):
@@ -279,6 +279,8 @@ def run():
         p.parse(tokens)
     except PException,e:
         error = 'ERR:P:{0}\n'.format(e)#bugs?
+    except IndexError:
+        error = 'ERR:P:{0}\n'.format(last_line)
     finally:
         p.print_tree()
         sys.stdout.write(error)
