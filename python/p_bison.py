@@ -100,7 +100,7 @@ class Parser:
             #print "Expected an } sign and didn't get it!"
             raise PException,self.tokens[0].lineno
 
-#        self.clean_newline()
+        self.clean_newline()
         if self.tokens and self.tokens[0].type == SEMI:#optional,so no else
             curnode.c5 = self.consume_token()
 #        self.global_conf_num = 1 TO BE DELETED
@@ -154,7 +154,7 @@ class Parser:
             #print "Expected an } sign and didn't get it!"
             raise PException,self.tokens[0].lineno
 
-            
+        self.clean_newline()            
         if self.tokens and self.tokens[0].type == SEMI:
             curnode.c6 = self.consume_token()
         #print "host is done"
@@ -267,9 +267,9 @@ def run():
         tokenizer.tokenize()
     except (FlexException, IllegalException, NullException):
         sys.stdout.write('ERR:L:%d\n'%tokenizer.lineno)
+        exit()
     except IndexError:
         sys.stdout.write('ERR:L:%d\n'%tokenizer.lineno)
-    finally:
         exit()
     try:    
         p = Parser()
