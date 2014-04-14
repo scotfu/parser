@@ -261,13 +261,15 @@ def run():
     if not os.path.isfile(file_name):
         sys.stdout.write('ERR:F:\n')
         exit()
-        
     data = open(file_name).read()
     try:
         tokenizer = Tokenizer(data)
         tokenizer.tokenize()
     except (FlexException, IllegalException, NullException):
         sys.stdout.write('ERR:L:%d\n'%tokenizer.lineno)
+    except IndexError:
+        sys.stdout.write('ERR:L:%d\n'%tokenizer.lineno)
+    finally:
         exit()
     try:    
         p = Parser()

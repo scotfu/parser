@@ -64,14 +64,14 @@ class Tokenizer:
     def __init__(self,data_str):
         self.data_str = data_str
         self.lineno = 1
-        self.tokens = []    
+        self.tokens = []
 
     def quoted_string(self): # "" are needed
         n = 1
         while True:
             if self.data_str[n] == '\n':
                 raise FlexException
-            elif ord(self.data_str[n]) > 127 or self.data_str[n] == '#':#only ascii except #
+            elif ord(self.data_str[n]) > 127:#only ascii
                 raise FlexException
             elif self.data_str[n] != '"':
                 n += 1
