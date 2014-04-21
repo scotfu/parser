@@ -1,1 +1,7 @@
-ERR:P:8
+GLOBAL:
+    I::port:80
+    I::num_threads:4
+    S::ssl_key:/etc/mycreds.pem
+    F::max_bandwidth:0.10
+    S::a0day:false
+ERR:P:12
