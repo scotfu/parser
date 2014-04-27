@@ -2,7 +2,8 @@
 !#
 
 (load "utils.scm")
-
+(use-modules (oop goops))
+(use-modules (oop goops describe))
 ;token type constants
 (define N_CONF  101 )
 (define N_GLOBAL  102)
@@ -32,12 +33,20 @@
 (define contents "")
 (define tokens `())
 
-(use-modules (oop goops))
+
 (define-class <node> ()
   (type #:init-value 0 #:getter get-type #:setter set-type! #:init-keyword #:type)
   (value #:init-value 0 #:getter get-value #:setter set-value! #:init-keyword #:value)
   (lineno #:init-value 0 #:getter get-lineno #:setter set-lineno! #:init-keyword #:lineno)
-  c1 c2 c3 c4 c5 c6)
+  (c1 #:init-value 0 #:getter get-c1 #:setter set-c1! #:init-keyword #:c1)
+  (c2 #:init-value 0 #:getter get-c2 #:setter set-c2! #:init-keyword #:c2)
+  (c3 #:init-value 0 #:getter get-c3 #:setter set-c3! #:init-keyword #:c3)
+  (c4 #:init-value 0 #:getter get-c4 #:setter set-c4! #:init-keyword #:c4)
+  (c5 #:init-value 0 #:getter get-c5 #:setter set-c5! #:init-keyword #:c5)
+  (c6 #:init-value 0 #:getter get-c6 #:setter set-c6! #:init-keyword #:c6)
+
+
+)
 
 ;get file name
 (define (get_file_name)
@@ -56,7 +65,7 @@
 )
 )
 
-;(defstruct node 
+
 
 ;read the file then return a string
 (define get_contents 
@@ -140,7 +149,6 @@ output
 (lambda (char char_list)
 (let ((output #f)
       )
-
   (for i in char_list
 
        (if (char=? char i)
@@ -193,7 +201,7 @@ output
 (let (
        (str_list (string->list str))
        (tokens (make-list 0))
-             (lineno 1)
+       (lineno 1)
 )
 
 (while (> (length str_list) 0)
@@ -289,22 +297,183 @@ output
                                                                              #:type STRING
                                                                              #:lineno lineno))))
                                   (display var)
- 
+;                                  (display (list? var))
                                         ))
         )
 );let
 );while
-(for t in  tokens
-     (display (get-value t))
-     (display ":")
-     (display (get-lineno t))
-     (newline)
-)
+tokens
 );let*
 );function
+
+;parser parts start here
+
+(define clean_newline 
+(lambda (tokens)
+(while (and (not(null? tokens))  (eqv? (get-type (car tokens)) NEW_LINE))
+       (set! tokens (cdr tokens))
+)
+tokens
+)
+)
+
+(define conf
+(lambda (tokens currnode)
+(begin
+(slot-set! currnode `c1 (make <node> #:type N_GLOBAL ))
+
+(global_conf tokens (get-c1 currnode))
+)
+)
+)
+
+(define key_value_pair
+(lambda tokens currnode flag)
+
+(set! tokens (clean_newline tokens))
+
+
+
+
+)
+
+(define key_value_pairs 
+(lambda (tokens currnode flag)
+(set! tokens (clean_newline tokens))
+(if (null? tokens)
+    (return)
+    )
+(if (eqv? RIGHT (get-type (car tokens) ));diff
+    (return)
+    (begin
+      (set-c1! currnode (make <node> #:type KV_PAIR))
+      (key_value_pair tokens (get-c1 currnode) flag)
+      ;reset tokens
+      (set-c2! currnode (make <node> #:type KV_PAIRS))
+      (key_value_pairs tokens (get-c2 currnode) flag)
+
+      )
+)
+tokens
+)
+
+)
+
+(define global_conf
+(lambda (tokens currnode)
+(let ((global_flag #t)
+      )
+
+(set! tokens (clean_newline tokens))
+;(display tokens)
+;(describe (car (get-value (car tokens))))
+;(describe "global")
+;(display (eqv? "global" (car (get-value (car tokens)))))
+;(newline)
+(if (and (not(null? tokens)) (equal? "global" (car (get-value (car tokens)))) )
+    (begin
+      (set! tokens (cdr tokens))
+      (slot-set! currnode `c1 (make <node> #:value "GLOBAL" #:type GLOBAL_KEYWORD))
+
+      )
+    ;todo exception handler
+
+)
+
+(set! tokens (clean_newline tokens))
+(if (and (not(null? tokens)) (eqv? LEFT  (get-type (car tokens)))  )
+    (begin
+      (slot-set! currnode `c2 (car tokens))
+      (set! tokens (cdr tokens))
+      )
+    ;todo exception handler
+)
+
+(set! tokens (clean_newline tokens))
+(slot-set! currnode `c3 (make <node> #:type KV_PAIRS));todo c3
+(key_value_pairs (get-c3 currnode));return tokens needed 
+(set! tokens (cdr tokens));todo
+
+
+
+(set! tokens (clean_newline tokens))
+(if (and (not(null? tokens)) (equal? RIGHT  (get-type (car tokens)))  )
+    (begin
+      (slot-set! currnode `c4 (car tokens));todo c3
+      (set! tokens (cdr tokens))
+      )
+    ;todo exception handler
+)
+
+(set! tokens (clean_newline tokens))
+(if (and (not(null? tokens)) (eqv? SEMI (get-type (car tokens))))
+    (begin
+      (slot-set! currnode `c5 (car tokens))
+      (set! tokens (cdr tokens))
+
+      )
+    ;optional, no exception here
+)
+
+
+)
+
+)
+)
+
+(define display_nodes
+(lambda (node)
+  (if (not (eqv? 0 node))
+
+      (begin
+        (if  (not (eqv? 0 (get-c1 node)))
+             (display_nodes (get-c1 node))
+                 )
+
+        (if (not (eqv? 0 (get-c2 node)))
+            (display_nodes (get-c2 node))
+                 )
+        (if (not (eqv? 0 (get-c3 node)))
+             (display_nodes (get-c3 node))
+                 )
+        (if (not (eqv? 0 (get-c4 node)))
+             (display_nodes (get-c4 node))
+                 )
+        (if (not (eqv? 0 (get-c5 node)))
+             (display_nodes (get-c5 node))
+                 )
+        (if (not (eqv? 0 (get-c6 node)))
+             (display_nodes (get-c6 node))
+                 )
+
+        (display (get-type node))
+        (display ":")
+        (display (get-value node))
+        (newline)
+
+)
+
+)
+)
+)
+
+
+(define parser 
+(lambda (tokens)
+  (let  (
+        (root  (make <node> #:type N_CONF))
+          )
+    (conf tokens root)
+    (display_nodes root)
+;    (describe (get-c1 root))
+
+)
+)
+)
+
 
 (get_file_name)
 (test_file file_name)
 ;(display (get_contents file_name))
-(tokenize (get_contents file_name))
+(parser (tokenize (get_contents file_name)))
 
