@@ -321,34 +321,34 @@ tokens
 (define key_value_pair
 (lambda (tokens currnode flag)
 (set! tokens (clean_newline tokens))
-(if (and (not (null? tokens))
-         (eqv? STRING (get-type (car tokens)))
-         (regexp-match? (string-match "^[a-zA-Z_][a-zA-Z_0-9]*$" (car (get-value (car tokens)))))
-)
-(begin 
-  (slot-set! currnode `c1 (make <node> #:type KEY #:value (car (get-value (car tokens)))))
-  (set! tokens (cdr tokens))
-  (letrec (
-           (node_type 0)
-           (prefix "")
-           )
+(cond (
+       (and (not (null? tokens))
+            (eqv? STRING (get-type (car tokens)))
+            (regexp-match? (string-match "^[a-zA-Z_][a-zA-Z_0-9]*$" (car (get-value (car tokens))))))
 
-    (if flag
-            (set! global_keys (append global_keys (make-list 1 (get-value (get-c1 currnode)))))
-            );add to global keys
+       (begin 
+         (slot-set! currnode `c1 (make <node> #:type KEY #:value (car (get-value (car tokens)))))
+         (set! tokens (cdr tokens))
+         (letrec (
+                  (node_type 0)
+                  (prefix "")
+                  )
+           (if flag
+               (set! global_keys (append global_keys (make-list 1 (get-value (get-c1 currnode)))))
+               );add to global keys
     (if (and (not (null? tokens))
-           (eqv? EQUAL (get-type (car tokens))))
-      (begin
-        (slot-set! currnode `c2 (car tokens))
-        (set! tokens (cdr tokens))
-        
+             (eqv? EQUAL (get-type (car tokens))))
+        (begin
+          (slot-set! currnode `c2 (car tokens))
+          (set! tokens (cdr tokens))
         (cond 
          ((and (not (null? tokens))
                (eqv? STRING (get-type (car tokens))))
           (begin
             (cond
              
-             ((regexp-match? (string-match "^[+-]?[0-9]+$" (car (get-value (car tokens)))))
+             (
+              (regexp-match? (string-match "^[+-]?[0-9]+$" (car (get-value (car tokens)))))
               (begin 
                 (set! node_type INT)
                 (set! prefix "I::")
@@ -362,12 +362,11 @@ tokens
                 
                 (set! node_type FLOAT)
                 (set! prefix "F::")
-                ))
-                                        ;float
+                ));float
              
              ((and (not (null? tokens))
                    (eqv? STRING (get-type (car tokens)))
-                   (regexp-match? (string-match "^[a-zA-Z/][a-z-A-Z0-9\\-/\\._]*$" (car (get-value (car tokens)))))
+                   (regexp-match? (string-match "^[/a-zA-Z][/\\._a-zA-Z0-9\\-]*$" (car (get-value (car tokens)))))
                    )
               (begin 
                 
@@ -379,12 +378,13 @@ tokens
             (set-c3! currnode (make <node> #:type node_type #:value (car (get-value (car tokens)))))
             (set! tokens (cdr tokens))
             ))
+         
          ((and (not (null? tokens)) (eqv? QUOTED_STRING (get-type (car tokens))))
-          (set-c3! currnode (make <node> #:type node_type #:value (car (get-value (car tokens)))))
-          
+          (set-c3! currnode (make <node> #:type QUOTED_STRING #:value (car (get-value (car tokens)))))
+          (set! tokens (cdr tokens))
+          (set! prefix "Q::")
           )
-
-         )))
+         )));END OF IF
     (if (not (null? tokens))
         (cond
          ((eqv? NEW_LINE (get-type (car tokens)))
@@ -393,14 +393,13 @@ tokens
          ((eqv? RIGHT (get-type (car tokens)))
           (values)
           )
-         )))
-;((eqv? RIGHT (get-type (car tokens)))(values))
+         ))
+    )))
+      ((eqv? RIGHT (get-type (car tokens)))(values))
+      )
+tokens
 )
-)tokens)
 )
-
-
-
 
 
 
@@ -408,7 +407,7 @@ tokens
 (define key_value_pairs 
 (lambda (tokens currnode flag)
 (set! tokens (clean_newline tokens))
-;(describe tokens)
+(display (length tokens))
 (newline)
 (if (null? tokens)
     (values)
@@ -417,6 +416,7 @@ tokens
     (begin
      (values))
     (begin
+      (display "a pair")(newline)
       (set-c1! currnode (make <node> #:type KV_PAIR))
       (set! tokens (key_value_pair tokens (get-c1 currnode) flag))
       ;reset tokens
@@ -427,8 +427,8 @@ tokens
 )
 tokens
 )
-
 )
+
 (define host_conf
 (lambda (tokens currnode)
 
@@ -514,10 +514,10 @@ tokens
 (lambda (tokens currnode)
 (begin
 (slot-set! currnode `c1 (make <node> #:type N_GLOBAL ))
-(set! tokens (global_conf tokens (get-c1 currnode)))
+(global_conf tokens (get-c1 currnode))
 (display (length tokens))
-(slot-set! currnode `c2 (make <node> #:type N_HOSTS ))
-(set! tokens (host_confs tokens (get-c2 currnode)))
+;(slot-set! currnode `c2 (make <node> #:type N_HOSTS ))
+;(set! tokens (host_confs tokens (get-c2 currnode)))
 
 )
 )
@@ -525,8 +525,6 @@ tokens
 
 (define global_conf
 (lambda (tokens currnode)
-(let ((global_flag #t)
-      )
 
 (set! tokens (clean_newline tokens))
 (if (and (not(null? tokens)) (equal? "global" (car (get-value (car tokens)))) )
@@ -570,10 +568,11 @@ tokens
       )
     ;optional, no exception here
 )
-)
 tokens
 )
+
 )
+
 
 
 
