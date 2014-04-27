@@ -3,9 +3,41 @@
 
 (load "utils.scm")
 
+;token type constants
+(define N_CONF  101 )
+(define N_GLOBAL  102)
+(define GLOBAL_KEYWORD 1021)                                                                       
+(define N_HOSTS 103)
+(define N_HOST 1031)
+(define HOST_KEYWORD  1032)
+(define HOST_NAME  1033)
+(define LEFT  104)
+(define KV_PAIRS  105)
+(define KV_PAIR 1051)
+(define KEY  1052)
+(define  EQUAL  1053)
+(define VALUE  1054)
+(define QUOTED_STRING  10541)
+(define STRING  10542)
+(define INT  10543)
+(define FLOAT  10544)
+(define RIGHT  106)
+(define SEMI  107)
+(define COMMENT  108)
+(define NEW_LINE  109)
+(define ERROR  110)
+
+
 (define file_name "test.cfg")
 (define contents "")
 (define tokens `())
+
+(use-modules (oop goops))
+(define-class <node> ()
+  (type #:init-value 0 #:getter get-type #:setter set-type! #:init-keyword #:type)
+  (value #:init-value 0 #:getter get-value #:setter set-value! #:init-keyword #:value)
+  (lineno #:init-value 0 #:getter get-lineno #:setter set-lineno! #:init-keyword #:lineno)
+  c1 c2 c3 c4 c5 c6)
 
 ;get file name
 (define (get_file_name)
@@ -23,6 +55,8 @@
 (display "ERR:F\n");todo exit here?
 )
 )
+
+;(defstruct node 
 
 ;read the file then return a string
 (define get_contents 
@@ -155,26 +189,31 @@ output
 ;);function
 
 
-
 (define (tokenize str)
-(let* (
+(let (
        (str_list (string->list str))
+       (tokens (make-list 0))
+             (lineno 1)
 )
 
 (while (> (length str_list) 0)
-       (let (
+       (letrec (
              (var "")
+
              (tmp `())
              (mchar (car str_list))
-             (lineno 1)
+
              )
-;         (display (char? mchar))
+
        (cond
        ((char=? mchar #\") (begin ;(display #\")
                                   (set! tmp (quoted_string str_list))
                                   (set! str_list (car tmp))
                                   (set! var (cdr tmp))
-                                  (set! tokens (append tokens var))
+                                  (set! tokens (append tokens (make-list 1 
+                                                                         (make <node> #:value var
+                                                                               #:lineno lineno
+                                                                               #:type QUOTED_STRING))))
                                   (display var)
                                   ))
        ((char=? mchar #\#) (begin 
@@ -190,39 +229,77 @@ output
        ((char=? mchar #\{) (begin 
                              (display "{")
                                   (set! str_list (cdr str_list))
-                                  (set! tokens (append tokens (list mchar)))
+
+                                  (set! tokens (append tokens (make-list 1 (make <node> 
+                                                                             #:value #\{
+                                                                             #:lineno lineno
+                                                                             #:type LEFT))))
                                   ))
        ((char=? mchar #\}) (begin 
                              (display "}" )
                                   (set! str_list (cdr str_list))
-                                  (set! tokens (append tokens (list mchar)))
+                                  (set! tokens (append tokens (make-list 1 (make <node> 
+                                                                             #:value #\}
+                                                                             #:lineno lineno
+                                                                             #:type RIGHT))))
+;                                  (set! tokens (append tokens (list mchar)))
                                   ))
        ((char=? mchar #\;) (begin 
                              (display ";")
                                   (set! str_list (cdr str_list))
-                                  (set! tokens (append tokens (list mchar)))
+
+                                  (set! tokens (append tokens (make-list 1 (make <node> 
+                                                                             #:value #\;
+                                                                             #:lineno lineno
+                                                                             #:type SEMI))))
+;                                  (set! tokens (append tokens (list mchar)))
                                   ))
        ((char=? mchar #\space) (begin 
                                  (display " ")
                                   (set! str_list (cdr str_list))
-                                  (set! tokens (append tokens (list mchar)))
+                                  ;(set! tokens (append tokens (list mchar)))
                                   ))
        ((char=? mchar #\newline) (begin 
                                    (display "\n ")
                                   (set! str_list (cdr str_list))
+
+                                  (set! tokens (append tokens (make-list 1 (make <node> 
+                                                                             #:value "newline"
+                                                                             #:type NEW_LINE
+                                                                             #:lineno lineno))))
                                   (set! lineno (+ 1 lineno))
-                                  (set! tokens (append tokens (list mchar)))
+
                                         ))
+       ((char=? mchar #\=) (begin 
+                                   (display "=")
+                                  (set! str_list (cdr str_list))
+                                  (set! tokens (append tokens (make-list 1 (make <node> 
+                                                                             #:value #\=
+                                                                             #:type EQUAL
+                                                                             #:lineno lineno))))
+
+                                        ))
+
        ((char<=? mchar #\delete) (begin 
                                   (set! tmp (n_string str_list))
                                   (set! var (cdr tmp))
                                   (set! str_list (car tmp))
-                                  (set! tokens (append tokens var))
+                                  (set! tokens (append tokens (make-list 1 (make <node> 
+                                                                             #:value var
+                                                                             #:type STRING
+                                                                             #:lineno lineno))))
                                   (display var)
+ 
                                         ))
         )
 );let
 );while
+(for t in  tokens
+     (display (get-value t))
+     (display ":")
+     (display (get-lineno t))
+     (newline)
+)
 );let*
 );function
 
@@ -230,4 +307,4 @@ output
 (test_file file_name)
 ;(display (get_contents file_name))
 (tokenize (get_contents file_name))
-;(display tokens)
+
