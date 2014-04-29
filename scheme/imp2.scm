@@ -35,6 +35,7 @@
 (define global_keys (make-list 0))
 (define global_node_list (make-list 0))
 (define global_lineno 1)
+(define last_lineno 100)
 (define-class <node> ()
   (type #:init-value 0 #:getter get-type #:setter set-type! #:init-keyword #:type)
   (value #:init-value 0 #:getter get-value #:setter set-value! #:init-keyword #:value)
@@ -47,6 +48,60 @@
   (c6 #:init-value 0 #:getter get-c6 #:setter set-c6! #:init-keyword #:c6)
 
 
+)
+
+(define origin_car car)
+(define car
+(lambda (list)
+(let (
+      (last_one 10000)
+      (last_node 0)
+       (out `())
+       )
+(if (not (null? list))
+    (begin
+;      (display "using original")
+      (set! out (origin_car list))
+    )
+    (begin
+
+      (get_nodes root)    
+      (begin
+           (set! last_one (length global_node_list))
+           (if  (not (null? global_node_list))
+                (begin
+                  (set! last_one (- last_one 1))
+                  (set! last_node (list-ref global_node_list last_one))
+
+                  (while (and 
+                          (not (null? global_node_list))
+                          (not (equal? RIGHT (get-type last_node))))
+                         (begin
+                           (set! global_node_list (reverse (cdr (reverse global_node_list))))
+                           (if  (not (null? global_node_list))
+                                (begin
+                                  (set! last_one (- last_one 1))
+                                  (set! last_node (list-ref global_node_list last_one))
+
+                                  )
+                                )
+                           )
+                         )
+
+                  )))
+
+;      (set! global_node_list (append global_node_list (make-list 1 (make <node> #:type ERROR))))
+      (show_result)
+      (display "ERR:P:")
+      (display last_lineno)
+      (newline)
+      (exit)
+
+      )
+)
+out
+)
+)
 )
 
 (define root (make <node> #:type N_CONF))
@@ -372,6 +427,7 @@ output
         )
 );let
 );while
+
 tokens
 );let*
 );function
@@ -448,6 +504,7 @@ tokens
              (else
               (begin
           (set-type! currnode ERROR)
+    (get_nodes root)    
                 (show_result)
                 (display "ERR:P:")
                 (display (get-lineno (car tokens)))
@@ -470,6 +527,7 @@ tokens
          (else
           (begin
           (set-type! currnode ERROR)
+    (get_nodes root)    
             (show_result)
             (display "ERR:P:")
             (display (get-lineno (car tokens)))
@@ -487,6 +545,7 @@ tokens
 )
     (begin
           (set-type! currnode ERROR)
+    (get_nodes root)    
         (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
@@ -506,6 +565,7 @@ tokens
           )
          (else    (begin
           (set-type! currnode ERROR)
+    (get_nodes root)    
                     (show_result)
                     (display "ERR:P:")
                     (display (get-lineno (car tokens)))
@@ -519,6 +579,7 @@ tokens
       (else
     (begin
           (set-type! currnode ERROR)
+    (get_nodes root)    
         (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
@@ -571,6 +632,7 @@ tokens
       )
     (begin
           (set-type! currnode ERROR)
+    (get_nodes root)    
       (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
@@ -592,6 +654,7 @@ tokens
       )
     (begin
           (set-type! currnode ERROR)
+    (get_nodes root)    
         (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
@@ -611,7 +674,9 @@ tokens
       )
     (begin
           (set-type! currnode ERROR)
-      (show_result)
+
+          (get_nodes root)    
+    (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
         (newline)
@@ -633,6 +698,7 @@ tokens
       )
     (begin
           (set-type! currnode ERROR)
+    (get_nodes root)    
       (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
@@ -704,6 +770,7 @@ tokens
       )
     (begin
           (set-type! currnode ERROR)
+    (get_nodes root)    
       (show_result)
       (display "ERR:P:")
       (display (get-lineno (car tokens)))
@@ -722,6 +789,7 @@ tokens
       )
     (begin
           (set-type! currnode ERROR)
+    (get_nodes root)    
       (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
@@ -744,6 +812,7 @@ tokens
       )
     (begin
           (set-type! currnode ERROR)
+    (get_nodes root)    
       (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
@@ -847,7 +916,7 @@ tokens
 (let (
       (output "")
       )
-    (get_nodes root)    
+
     (for node in global_node_list
          (if (equal? GLOBAL_KEYWORD (get-type node))
              (set! output (string-append output "GLOBAL:\n"))
@@ -892,6 +961,7 @@ tokens
 (test_file file_name)
 ;(display (get_contents file_name))
 (tokenize (get_contents file_name))
-
+(set! last_lineno (get-lineno (list-ref tokens (- (length tokens) 1))))
 (parser)
+(get_nodes root)    
 (show_result)
