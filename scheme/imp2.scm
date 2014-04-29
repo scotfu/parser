@@ -31,7 +31,7 @@
 
 (define file_name "test.cfg")
 (define contents "")
-(define tokens `())
+(define tokens (make-list 0))
 (define global_keys (make-list 0))
 (define global_node_list (make-list 0))
 (define global_lineno 1)
@@ -48,6 +48,8 @@
 
 
 )
+
+(define root (make <node> #:type N_CONF))
 
 ;get file name
 (define (get_file_name)
@@ -252,7 +254,6 @@ output
 (define (tokenize str)
 (let (
        (str_list (string->list str))
-       (tokens (make-list 0))
 ;       (lineno 1)
 )
 (if (char_in #\null str_list)
@@ -362,7 +363,7 @@ output
                                         ))
        (else
         (begin
-          (display "ERR:P:")
+          (display "ERR:L:")
           (display (get-lineno (car tokens)))
           (newline)
           (exit)
@@ -378,7 +379,7 @@ tokens
 ;parser parts start here
 
 (define clean_newline 
-(lambda (tokens)
+(lambda ()
 (while (and (not(null? tokens))  (eqv? (get-type (car tokens)) NEW_LINE))
        (set! tokens (cdr tokens))
 )
@@ -388,8 +389,8 @@ tokens
 )
 
 (define key_value_pair
-(lambda (tokens currnode flag)
-(set! tokens (clean_newline tokens))
+(lambda (currnode flag)
+(set! tokens (clean_newline))
 (cond (
        (and (not (null? tokens))
             (eqv? STRING (get-type (car tokens)))
@@ -446,10 +447,13 @@ tokens
 
              (else
               (begin
+          (set-type! currnode ERROR)
+                (show_result)
                 (display "ERR:P:")
                 (display (get-lineno (car tokens)))
                 (newline)
                 (exit)
+
                 )
               )
              )
@@ -465,6 +469,8 @@ tokens
           )
          (else
           (begin
+          (set-type! currnode ERROR)
+            (show_result)
             (display "ERR:P:")
             (display (get-lineno (car tokens)))
             (newline)
@@ -480,6 +486,8 @@ tokens
         (set-value! (get-c1 currnode) (string-append "    " prefix (get-value (get-c1 currnode))))
 )
     (begin
+          (set-type! currnode ERROR)
+        (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
         (newline)
@@ -497,6 +505,8 @@ tokens
           (values)
           )
          (else    (begin
+          (set-type! currnode ERROR)
+                    (show_result)
                     (display "ERR:P:")
                     (display (get-lineno (car tokens)))
                     (newline)
@@ -508,6 +518,8 @@ tokens
       ((eqv? RIGHT (get-type (car tokens)))(values))
       (else
     (begin
+          (set-type! currnode ERROR)
+        (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
         (newline)
@@ -524,8 +536,8 @@ tokens
 
 
 (define key_value_pairs 
-(lambda (tokens currnode flag)
-(set! tokens (clean_newline tokens))
+(lambda (currnode flag)
+(set! tokens (clean_newline))
 
 (if (null? tokens)
     (values)
@@ -535,10 +547,10 @@ tokens
      (values))
     (begin
       (set-c1! currnode (make <node> #:type KV_PAIR))
-      (set! tokens (key_value_pair tokens (get-c1 currnode) flag))
+      (set! tokens (key_value_pair  (get-c1 currnode) flag))
       ;reset tokens
       (set-c2! currnode (make <node> #:type KV_PAIRS))
-      (set! tokens (key_value_pairs tokens (get-c2 currnode) flag))
+      (set! tokens (key_value_pairs  (get-c2 currnode) flag))
 
       )
 )
@@ -547,9 +559,9 @@ tokens
 )
 
 (define host_conf
-(lambda (tokens currnode)
+(lambda (currnode)
 
-(set! tokens (clean_newline tokens))
+(set! tokens (clean_newline))
 (if (and (not(null? tokens)) (equal? "host" 
                                              (get-value (car tokens))))
     (begin
@@ -558,6 +570,8 @@ tokens
 
       )
     (begin
+          (set-type! currnode ERROR)
+      (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
         (newline)
@@ -568,7 +582,7 @@ tokens
 
 )
 
-(set! tokens (clean_newline tokens))
+(set! tokens (clean_newline))
 (if (and (not(null? tokens)) 
          (regexp-match? (string-match "^[a-zA-Z_0-9\\._\\-]*$" (get-value (car tokens)))))
     (begin
@@ -577,6 +591,8 @@ tokens
 
       )
     (begin
+          (set-type! currnode ERROR)
+        (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
         (newline)
@@ -587,13 +603,15 @@ tokens
 
 )
 
-(set! tokens (clean_newline tokens))
+(set! tokens (clean_newline))
 (if (and (not(null? tokens)) (eqv? LEFT  (get-type (car tokens)))  )
     (begin
       (slot-set! currnode `c3 (car tokens))
       (set! tokens (cdr tokens))
       )
     (begin
+          (set-type! currnode ERROR)
+      (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
         (newline)
@@ -603,17 +621,19 @@ tokens
     ;todo exception handler
 )
 
-(set! tokens (clean_newline tokens))
+(set! tokens (clean_newline))
 (slot-set! currnode `c4 (make <node> #:type KV_PAIRS));todo c3
-(set! tokens (key_value_pairs tokens (get-c4 currnode) #f));return tokens needed 
+(set! tokens (key_value_pairs (get-c4 currnode) #f));return tokens needed 
 
-(set! tokens (clean_newline tokens))
+(set! tokens (clean_newline))
 (if (and (not(null? tokens)) (equal? RIGHT  (get-type (car tokens)))  )
     (begin
       (slot-set! currnode `c5 (car tokens));todo c3
       (set! tokens (cdr tokens))
       )
     (begin
+          (set-type! currnode ERROR)
+      (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
         (newline)
@@ -623,7 +643,7 @@ tokens
     ;todo exception handler
 )
 
-(set! tokens (clean_newline tokens))
+(set! tokens (clean_newline))
 (if (and (not(null? tokens)) (eqv? SEMI (get-type (car tokens))))
     (begin
       (slot-set! currnode `c6 (car tokens))
@@ -638,17 +658,17 @@ tokens
 
 
 (define host_confs
-(lambda (tokens currnode)
-(set! tokens (clean_newline tokens))
+(lambda (currnode)
+(set! tokens (clean_newline))
 (if (null? tokens)
     (values)
     (begin
 (set-c1! currnode (make <node> #:type N_HOST))
-(set! tokens (host_conf tokens (get-c1 currnode)))
+(set! tokens (host_conf (get-c1 currnode)))
 
 (set-c2! currnode (make <node> #:type N_HOSTS))
 
-(set! tokens (host_confs tokens (get-c2 currnode)))
+(set! tokens (host_confs  (get-c2 currnode)))
 )
 
 )
@@ -660,22 +680,22 @@ tokens
 
 
 (define conf
-(lambda (tokens currnode)
+(lambda (currnode)
 (begin
 (slot-set! currnode `c1 (make <node> #:type N_GLOBAL ))
-(set! tokens (global_conf tokens (get-c1 currnode)))
+(set! tokens (global_conf (get-c1 currnode)))
 
 (slot-set! currnode `c2 (make <node> #:type N_HOSTS ))
-(host_confs tokens (get-c2 currnode))
+(host_confs (get-c2 currnode))
 
 )
 )
 )
 
 (define global_conf
-(lambda (tokens currnode)
+(lambda (currnode)
 
-(set! tokens (clean_newline tokens))
+(set! tokens (clean_newline))
 (if (and (not(null? tokens)) (equal? "global" (get-value (car tokens)))) 
     (begin
       (set! tokens (cdr tokens))
@@ -683,22 +703,26 @@ tokens
 
       )
     (begin
-        (display "ERR:P:")
-        (display (get-lineno (car tokens)))
-        (newline)
-        (exit)
+          (set-type! currnode ERROR)
+      (show_result)
+      (display "ERR:P:")
+      (display (get-lineno (car tokens)))
+      (newline)
+      (exit)
         )
     ;todo exception handler
 
 )
 
-(set! tokens (clean_newline tokens))
+(set! tokens (clean_newline))
 (if (and (not(null? tokens)) (eqv? LEFT  (get-type (car tokens)))  )
     (begin
       (slot-set! currnode `c2 (car tokens))
       (set! tokens (cdr tokens))
       )
     (begin
+          (set-type! currnode ERROR)
+      (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
         (newline)
@@ -708,17 +732,19 @@ tokens
     ;todo exception handler
 )
 
-(set! tokens (clean_newline tokens))
+(set! tokens (clean_newline))
 (slot-set! currnode `c3 (make <node> #:type KV_PAIRS));todo c3
-(set! tokens (key_value_pairs tokens (get-c3 currnode) #t));return tokens needed 
+(set! tokens (key_value_pairs (get-c3 currnode) #t));return tokens needed 
 
-(set! tokens (clean_newline tokens))
+(set! tokens (clean_newline))
 (if (and (not(null? tokens)) (equal? RIGHT  (get-type (car tokens)))  )
     (begin
       (slot-set! currnode `c4 (car tokens));todo c3
       (set! tokens (cdr tokens))
       )
     (begin
+          (set-type! currnode ERROR)
+      (show_result)
         (display "ERR:P:")
         (display (get-lineno (car tokens)))
         (newline)
@@ -728,7 +754,7 @@ tokens
     ;todo exception handler
 )
 
-(set! tokens (clean_newline tokens))
+(set! tokens (clean_newline))
 (if (and (not(null? tokens)) (eqv? SEMI (get-type (car tokens))))
     (begin
       (slot-set! currnode `c5 (car tokens))
@@ -744,36 +770,47 @@ tokens
 )
 
 
-(define delete
-  (lambda (item list)
-    (cond
-     ((equal? item (car list)) (cdr list))
-     (else (cons (car list) (delete item (cdr list)))))))
 
 (define get_nodes
 (lambda (node)
 (let ((last_one 10000)
       (last_node 0)
       )
-  
-  (if (char_in  (get-type node) 
+   (if (char_in (get-type node) 
                 (list GLOBAL_KEYWORD HOST_KEYWORD HOST_NAME KEY STRING INT FLOAT EQUAL QUOTED_STRING RIGHT SEMI LEFT))
       (set! global_node_list (append global_node_list (make-list 1 node)))
       )
+ 
+  (if
+         (equal? ERROR (get-type node))
+         (begin
+           (set! last_one (length global_node_list))
+           (if  (not (null? global_node_list))
+                (begin
+                  (set! last_one (- last_one 1))
+                  (set! last_node (list-ref global_node_list last_one))
 
-  (if (equal? ERROR (get-type node))
-      (begin
-      (set! last_one (length global_node_list))
-      (set! last_one (- last_one 1))
-      (set! last_node (list-ref global_node_list last_one))
-      (while (and 
-             (not (null? global_node_list))
-             (not (equal? RIGHT (get-type ))))
-             (set! global_node_list (reverse (cdr (reverse global_node_list))))
-             )
-      )
-  )
-  (if  (not (eqv? 0 (get-c1 node)))
+                  (while (and 
+                          (not (null? global_node_list))
+                          (not (equal? RIGHT (get-type last_node))))
+                         (begin
+                           (set! global_node_list (reverse (cdr (reverse global_node_list))))
+                           (if  (not (null? global_node_list))
+                                (begin
+                                  (set! last_one (- last_one 1))
+                                  (set! last_node (list-ref global_node_list last_one))
+
+                                  )
+                                )
+                           )
+                         )
+
+                  )))
+
+         
+         (begin
+
+  (if (not (eqv? 0 (get-c1 node)))
        (get_nodes (get-c1 node)))
 
   (if (not (eqv? 0 (get-c2 node)))
@@ -793,19 +830,24 @@ tokens
 
 )
 )
-)
 
+)
+))
 
 (define parser 
-(lambda (tokens)
-  (let  (
-        (root  (make <node> #:type N_CONF))
-        (output "")
-          )
+(lambda ()
 
-    (conf tokens root)
-    (get_nodes root)
+    (conf root)
+)
+)
     
+
+(define show_result
+(lambda ()
+(let (
+      (output "")
+      )
+    (get_nodes root)    
     (for node in global_node_list
          (if (equal? GLOBAL_KEYWORD (get-type node))
              (set! output (string-append output "GLOBAL:\n"))
@@ -844,8 +886,12 @@ tokens
 )
 
 
+
+
 (get_file_name)
 (test_file file_name)
 ;(display (get_contents file_name))
-(parser (tokenize (get_contents file_name)))
+(tokenize (get_contents file_name))
 
+(parser)
+(show_result)
