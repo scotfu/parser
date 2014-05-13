@@ -1,0 +1,7 @@
+GLOBAL:
+HOST www.example.com:
+    I::a:+0
+    F::b:-0.
+    S::c:/
+    Q::d:"""/"""
+ERR:P:12

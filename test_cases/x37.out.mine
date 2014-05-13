@@ -1,0 +1,10 @@
+GLOBAL:
+    I::a:+0
+    F::b:-0.
+    S::c:/
+    Q::d:"""#"""
+HOST www.example.com:
+    I:O:a:+0
+    F:O:b:-0.
+    S:O:c:/
+    Q:O:d:"""#"""

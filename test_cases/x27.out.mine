@@ -1,0 +1,3 @@
+GLOBAL:
+HOST www.example.com:
+    Q::_abc:"""!@#$%^&*()_+"""

@@ -1,0 +1,16 @@
+GLOBAL:
+    Q::a:"""global"""
+    S::c:global
+    S::d:HOST
+    I::d:4
+HOST global:
+    I::b:+3
+    Q::x:"""sadasdasd|"""
+HOST xx:
+    S:O:a:global
+HOST ._-1:
+    F::a_:000000000000001.0
+    I::b:2
+    S::_cdsdsd343234:b3_-/.
+    Q::string:"""""a
+1233dsfsdfnjkdnkjxcjkluioerknk"""

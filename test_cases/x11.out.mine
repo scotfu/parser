@@ -1,0 +1,4 @@
+GLOBAL:
+HOST foo.bar.com:
+    S::myvariable:/etc/myfriend
+    I::port:80
