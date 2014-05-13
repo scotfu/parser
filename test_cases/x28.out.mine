@@ -1,4 +1,1 @@
-GLOBAL:
-HOST www.example.com:
-    Q::abc:"""!@#$%^&*()_+"""
-ERR:P:3
+ERR:L:3

@@ -1,8 +1,1 @@
-GLOBAL:
-    I::port:80
-    I::num_threads:4
-    S::ssl_key:/etc/mycreds.pem
-    F::max_bandwidth:10.0
-HOST www.example.com:
-    S::http_root:/home/example/
-ERR:P:12
+ERR:L:12

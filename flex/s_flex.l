@@ -20,9 +20,10 @@
 %option yylineno
 %%
 
-[ \t]                   {}
+
 \"(?:\\.|[^"\\])*\"      { printf("Token value: >>%s<<\n", yytext); return QUOTED_STRING;}
-#.*\n                    { printf("Token value: >>%s<<\n", yytext); return COMMENT;}  
+#[^\n]*                    { printf("Token value: >>%s<<\n", yytext); return COMMENT;}  
+\n                    { printf("Token value: >>newline<<\n"); return NEW_LINE;}  
 "global"                 { printf("Token value: >>%s<<\n", yytext); return GLOBAL_KEYWORD;}  
 "host"                   { printf("Token value: >>%s<<\n", yytext); return HOST_KEYWORD;}
 [_a-zA-Z][a-zA-Z0-9_]*   { printf("Token value: >>%s<<\n", yytext);  return KEY;}
@@ -34,20 +35,24 @@
 "{"                   { printf("Token value: >>%s<<\n", yytext); return LEFT;}  
 "}"                   { printf("Token value: >>%s<<\n", yytext); return RIGHT;}  
 "="                   { printf("Token value: >>%s<<\n", yytext);return EQUAL;}  
-"\n"                  { printf("Token value: >>%s<<\n", yytext);return NEW_LINE;}   
 "\\0x00"            { printf("Token value: >>%s<<\n", yytext);return NULL_;}     
+" "                 {}
 .                    {printf("Found wft:%s",yytext);}  
 %%
 
 
 int main(int argc, char **argv) {
   int n;
-    FILE *tmpfile = fopen(argv[1],"r");
-    if(!tmpfile)
-      {
-      printf("ERR:F:\n");
-      return -1;    
-      }
+  char *file_name = "test.cfg";
+  if(argc>1){file_name = argv[1];}
+  FILE *tmpfile = fopen(file_name,"r");
+           if(!tmpfile)
+	      {
+
+		printf("ERR:F:\n");
+		return -1;    
+	      }
+
     yyin = tmpfile;
   while(1) {
     n = yylex();

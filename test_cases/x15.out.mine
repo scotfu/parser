@@ -1,4 +1,1 @@
-GLOBAL:
-    I::x:10
-HOST this:
-    Q:O:x:"""Bad stringa"""
+ERR:L:4

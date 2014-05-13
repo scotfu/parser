@@ -1,0 +1,53 @@
+(define show_result
+(lambda ()
+(let (
+      (output "")
+      )
+    (get_nodes root)    
+    (for node in global_node_list
+         (if (equal? GLOBAL_KEYWORD (get-type node))
+             (set! output (string-append output "GLOBAL:\n"))
+             )
+         (if (equal? HOST_KEYWORD (get-type node))
+             (set! output (string-append output "HOST "))
+             )
+         (if (equal? HOST_NAME (get-type node))
+             (set! output (string-append output (get-value node) ":\n"))
+             )
+         (if (equal? KEY (get-type node))
+             (set! output (string-append output (get-value node)))
+             )
+         (if (equal? STRING (get-type node))
+             (set! output (string-append output (get-value node) "\n"))
+             )
+         (if (equal? INT (get-type node))
+             (set! output (string-append output (get-value node) "\n"))
+             )
+         (if (equal? FLOAT (get-type node))
+             (set! output (string-append output  (get-value node) "\n"))
+             )
+         (if (equal? EQUAL (get-type node))
+             (set! output (string-append output ":"))
+             )
+         (if (equal? QUOTED_STRING (get-type node))
+             (set! output (string-append output  (get-value node) "\n"))
+             )
+
+                  )
+
+    (display output)
+
+)
+)
+)
+
+
+
+
+(get_file_name)
+(test_file file_name)
+;(display (get_contents file_name))
+(tokenize (get_contents file_name))
+
+(parser)
+(show_result)

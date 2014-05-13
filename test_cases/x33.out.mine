@@ -1,6 +1,1 @@
-GLOBAL:
-HOST www.example.com:
-    S::abc:/-._
-HOST www.example2.com:
-    Q::abc:"""!@#$%^&*()_+"\
-"""
+ERR:L:3

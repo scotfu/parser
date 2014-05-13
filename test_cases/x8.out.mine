@@ -1,3 +1,1 @@
-GLOBAL:
-HOST foo:
-    I::x:1
+ERR:L:3

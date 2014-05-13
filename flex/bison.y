@@ -77,7 +77,7 @@ void format_string(char s[1000])
 
 %union {char *str; tree_t *t;}
 
-%token<str> QUOTED_STRING COMMENT KEY HOST_NAME_STRING UNQUOTED_STRING INT FLOAT GLOBAL_KEYWORD HOST_KEYWORD EQUAL LEFT RIGHT NULL_ SEMI
+%token<str> QUOTED_STRING COMMENT KEY HOST_NAME_STRING UNQUOTED_STRING INT FLOAT GLOBAL_KEYWORD HOST_KEYWORD EQUAL LEFT RIGHT NULL_ SEMI NEW_LINE
 %type <t> global_conf host_confs key_value_pairs host_conf key_value comments global_c host_c
 %%
 
@@ -90,14 +90,14 @@ global_conf: global_c
 ;
 global_c : GLOBAL_KEYWORD comments {$1 = (tree_t *)malloc(sizeof(tree_t));cur->next=$1;cur=cur->next;cur->var_name="GLOBAL";cur->var_value="";cur->type=265;} comments LEFT comments key_value_pairs comments RIGHT comments 
 ;
-host_confs : comments host_conf comments
-|host_confs host_conf  comments{}
+host_confs : host_conf comments
+|host_confs  comments host_conf comments
 | /* empty */ 
 
 host_conf :host_c
-|host_c SEMI
+|host_c  comments SEMI
 ;
-host_c:HOST_KEYWORD comments HOST_NAME_STRING  comments {$1 = (tree_t *)malloc(sizeof(tree_t));cur->next=$1;cur=cur->next;cur->var_name="HOST";cur->var_value=$3;cur->type=266;} LEFT comments key_value_pairs comments RIGHT
+host_c:HOST_KEYWORD comments HOST_NAME_STRING comments {$1 = (tree_t *)malloc(sizeof(tree_t));cur->next=$1;cur=cur->next;cur->var_name="HOST";cur->var_value=$3;cur->type=266;} LEFT comments key_value_pairs comments RIGHT
 ; 
 key_value_pairs : key_value comments {cur->next = $1; cur = cur->next;}
 |key_value_pairs key_value  {int tmp_lno=cur->lno;cur->next = $2; cur = cur->next; if(tmp_lno==cur->lno){yyerror();}} comments
@@ -116,10 +116,14 @@ key_value : KEY EQUAL INT {$$ = (tree_t *)malloc(sizeof(tree_t));
    $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=262;$$->lno=yylineno;
  
  }
+|KEY EQUAL KEY {$$ = (tree_t *)malloc(sizeof(tree_t));
+   $$->var_name=$1; $$->var_value=$3; $$->next=0;$$->type=262;$$->lno=yylineno;
+ 
+ }
 ;
 
 comments: /* empty */
-         |comments COMMENT
+         |NEW_LINE comments
 
 ;
 %%
@@ -211,6 +215,6 @@ int main(int argc, char **argv) {
 
 void yyerror()
 {
-  printf("ERR:P:%d\n", yylineno);
+  printf("ERR:L:%d\n", yylineno);
   exit(-1);
 }
