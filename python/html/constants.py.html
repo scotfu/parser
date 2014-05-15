@@ -1,0 +1,96 @@
+<html><head title="/home/fu/workspaces/PL/parser/python/constants.py"><style type='text/css'>
+body { color: #666666; }
+a {
+    text-decoration: none; color: #5AA2A7;
+    border: solid 1px rgba(255,255,255,0);
+}
+a.active {
+    background: -webkit-linear-gradient(top,rgba(255, 255, 200, 0.35) 0,rgba(255, 255, 200, 0.55) 100%);
+    border: solid 1px #E5E600;
+}
+table, th, td { border: 1px solid lightgrey; padding: 5px; corner: rounded; }
+.builtin {color: #B17E41;}
+.comment, .block-comment {color: #aaaaaa; font-style: italic;}
+.constant {color: #888888;}
+.decorator {color: #778899;}
+.doc-string {color: #aaaaaa;}
+.error {border-bottom: 1px solid red;}
+.field-name {color: #2e8b57;}
+.function {color: #4682b4;}
+.identifier {color: #8b7765;}
+.info {border-bottom: 1px dotted RoyalBlue;}
+.keyword {color: #0000cd;}
+.lineno {color: #cccccc;}
+.number {color: #483d8b;}
+.parameter {color: #777777;}
+.string {color: #999999;}
+.type-name {color: #4682b4;}
+.warning {border-bottom: 1px dotted orange;}</style>
+<script language="JavaScript" type="text/javascript">
+var highlighted;
+
+function highlight(xid)
+{
+    var elms = document.querySelectorAll('[xid="' + xid + '"]');
+    for (k in elms) {
+        v = elms[k]
+        v.className = "active";
+    }
+    highlighted = xid;
+}
+
+function clearHighlight() {
+    var elms = document.querySelectorAll('[xid="' + highlighted + '"]');
+    for (k in elms) {
+        v = elms[k]
+        v.className = "";
+    }
+}
+
+window.onload =
+    function (e) {
+        var tags = document.getElementsByTagName("A")
+        for (var i = 0; i < tags.length; i++) {
+            tags[i].onmouseover =
+                function (e) {
+                    clearHighlight();
+                    var xid = e.toElement.getAttribute('xid');
+                    highlight(xid);
+                }
+        }
+    }</script>
+</head>
+<body>
+<table width=100% border='1px solid gray'><tr><td valign='top'><ul>
+<li><a href='#.home.fu.workspaces.PL.parser.python.constants.N_CONF', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_N_CONF")'><span class='identifier'>N_CONF</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.N_GLOBAL', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_N_GLOBAL")'><span class='identifier'>N_GLOBAL</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.GLOBAL_KEYWORD', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_GLOBAL_KEYWORD")'><span class='identifier'>GLOBAL_KEYWORD</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.N_HOSTS', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_N_HOSTS")'><span class='identifier'>N_HOSTS</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.N_HOST', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_N_HOST")'><span class='identifier'>N_HOST</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.HOST_KEYWORD', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_HOST_KEYWORD")'><span class='identifier'>HOST_KEYWORD</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.HOST_NAME', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_HOST_NAME")'><span class='identifier'>HOST_NAME</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.LEFT', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_LEFT")'><span class='identifier'>LEFT</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.KV_PAIRS', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_KV_PAIRS")'><span class='identifier'>KV_PAIRS</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.KV_PAIR', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_KV_PAIR")'><span class='identifier'>KV_PAIR</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.KEY', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_KEY")'><span class='identifier'>KEY</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.EQUAL', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_EQUAL")'><span class='identifier'>EQUAL</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.VALUE', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_VALUE")'><span class='identifier'>VALUE</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.QUOTED_STRING', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_QUOTED_STRING")'><span class='identifier'>QUOTED_STRING</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.STRING', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_STRING")'><span class='identifier'>STRING</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.INT', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_INT")'><span class='identifier'>INT</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.FLOAT', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_FLOAT")'><span class='identifier'>FLOAT</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.RIGHT', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_RIGHT")'><span class='identifier'>RIGHT</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.SEMI', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_SEMI")'><span class='identifier'>SEMI</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.COMMENT', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_COMMENT")'><span class='identifier'>COMMENT</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.NEW_LINE', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_NEW_LINE")'><span class='identifier'>NEW_LINE</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.constants.ERROR', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_constants_ERROR")'><span class='identifier'>ERROR</span></a></li></ul>
+</td><td><pre><span class='lineno'>   1</span> <a name='.home.fu.workspaces.PL.parser.python.constants.N_CONF', xid ='.home.fu.workspaces.PL.parser.python.constants.N_CONF', title='int'>N_CONF</a> = 101
+<span class='lineno'>   2</span> 
+<span class='lineno'>   3</span> <a name='.home.fu.workspaces.PL.parser.python.constants.N_GLOBAL', xid ='.home.fu.workspaces.PL.parser.python.constants.N_GLOBAL', title='int'>N_GLOBAL</a> = 102
+<span class='lineno'>   4</span> <a name='.home.fu.workspaces.PL.parser.python.constants.GLOBAL_KEYWORD', xid ='.home.fu.workspaces.PL.parser.python.constants.GLOBAL_KEYWORD', title='int'>GLOBAL_KEYWORD</a> = 1021
+<span class='lineno'>   5</span> 
+<span class='lineno'>   6</span> <a name='.home.fu.workspaces.PL.parser.python.constants.N_HOSTS', xid ='.home.fu.workspaces.PL.parser.python.constants.N_HOSTS', title='int'>N_HOSTS</a> =103
+<span class='lineno'>   7</span> <a name='.home.fu.workspaces.PL.parser.python.constants.N_HOST', xid ='.home.fu.workspaces.PL.parser.python.constants.N_HOST', title='int'>N_HOST</a>= 1031
+<span class='lineno'>   8</span> 
+<span class='lineno'>   9</span> <a name='.home.fu.workspaces.PL.parser.python.constants.HOST_KEYWORD', xid ='.home.fu.workspaces.PL.parser.python.constants.HOST_KEYWORD', title='int'>HOST_KEYWORD</a> = 1032
+<span class='lineno'>  10</span> <a name='.home.fu.workspaces.PL.parser.python.constants.HOST_NAME', xid ='.home.fu.workspaces.PL.parser.python.constants.HOST_NAME', title='int'>HOST_NAME</a> = 1033
+<span class='lineno'>  11</span> <a name='.home.fu.workspaces.PL.parser.python.constants.LEFT', xid ='.home.fu.workspaces.PL.parser.python.constants.LEFT', title='int'>LEFT</a> = 104
+<span class='lineno'>  12</span> 
+<span class='lineno'>  13</span> <a name='.home.fu.workspaces.PL.parser.python.constants.KV_PAIRS', xid ='.home.fu.workspaces.PL.parser.python.constants.KV_PAIRS', title='int'>KV_PAIRS</a> = 105
+<span class='lineno'>  14</span> <a name='.home.fu.workspaces.PL.parser.python.constants.KV_PAIR', xid ='.home.fu.workspaces.PL.parser.python.constants.KV_PAIR', title='int'>KV_PAIR</a>= 1051
+<span class='lineno'>  15</span> <a name='.home.fu.workspaces.PL.parser.python.constants.KEY', xid ='.home.fu.workspaces.PL.parser.python.constants.KEY', title='int'>KEY</a> = 1052
+<span class='lineno'>  16</span> <a name='.home.fu.workspaces.PL.parser.python.constants.EQUAL', xid ='.home.fu.workspaces.PL.parser.python.constants.EQUAL', title='int'>EQUAL</a> = 1053
+<span class='lineno'>  17</span> <a name='.home.fu.workspaces.PL.parser.python.constants.VALUE', xid ='.home.fu.workspaces.PL.parser.python.constants.VALUE', title='int'>VALUE</a> = 1054
+<span class='lineno'>  18</span> <a name='.home.fu.workspaces.PL.parser.python.constants.QUOTED_STRING', xid ='.home.fu.workspaces.PL.parser.python.constants.QUOTED_STRING', title='int'>QUOTED_STRING</a> = 10541
+<span class='lineno'>  19</span> <a name='.home.fu.workspaces.PL.parser.python.constants.STRING', xid ='.home.fu.workspaces.PL.parser.python.constants.STRING', title='int'>STRING</a> = 10542
+<span class='lineno'>  20</span> <a name='.home.fu.workspaces.PL.parser.python.constants.INT', xid ='.home.fu.workspaces.PL.parser.python.constants.INT', title='int'>INT</a> = 10543
+<span class='lineno'>  21</span> <a name='.home.fu.workspaces.PL.parser.python.constants.FLOAT', xid ='.home.fu.workspaces.PL.parser.python.constants.FLOAT', title='int'>FLOAT</a> =10544
+<span class='lineno'>  22</span> 
+<span class='lineno'>  23</span> <a name='.home.fu.workspaces.PL.parser.python.constants.RIGHT', xid ='.home.fu.workspaces.PL.parser.python.constants.RIGHT', title='int'>RIGHT</a> = 106
+<span class='lineno'>  24</span> 
+<span class='lineno'>  25</span> <a name='.home.fu.workspaces.PL.parser.python.constants.SEMI', xid ='.home.fu.workspaces.PL.parser.python.constants.SEMI', title='int'>SEMI</a> = 107
+<span class='lineno'>  26</span> <a name='.home.fu.workspaces.PL.parser.python.constants.COMMENT', xid ='.home.fu.workspaces.PL.parser.python.constants.COMMENT', title='int'>COMMENT</a> = 108
+<span class='lineno'>  27</span> <a name='.home.fu.workspaces.PL.parser.python.constants.NEW_LINE', xid ='.home.fu.workspaces.PL.parser.python.constants.NEW_LINE', title='int'>NEW_LINE</a> = 109
+<span class='lineno'>  28</span> 
+<span class='lineno'>  29</span> 
+<span class='lineno'>  30</span> <a name='.home.fu.workspaces.PL.parser.python.constants.ERROR', xid ='.home.fu.workspaces.PL.parser.python.constants.ERROR', title='int'>ERROR</a> = 110
+</pre></td></tr></table></body></html>

@@ -1,0 +1,93 @@
+<html><head title="/home/fu/workspaces/PL/parser/python/test.py"><style type='text/css'>
+body { color: #666666; }
+a {
+    text-decoration: none; color: #5AA2A7;
+    border: solid 1px rgba(255,255,255,0);
+}
+a.active {
+    background: -webkit-linear-gradient(top,rgba(255, 255, 200, 0.35) 0,rgba(255, 255, 200, 0.55) 100%);
+    border: solid 1px #E5E600;
+}
+table, th, td { border: 1px solid lightgrey; padding: 5px; corner: rounded; }
+.builtin {color: #B17E41;}
+.comment, .block-comment {color: #aaaaaa; font-style: italic;}
+.constant {color: #888888;}
+.decorator {color: #778899;}
+.doc-string {color: #aaaaaa;}
+.error {border-bottom: 1px solid red;}
+.field-name {color: #2e8b57;}
+.function {color: #4682b4;}
+.identifier {color: #8b7765;}
+.info {border-bottom: 1px dotted RoyalBlue;}
+.keyword {color: #0000cd;}
+.lineno {color: #cccccc;}
+.number {color: #483d8b;}
+.parameter {color: #777777;}
+.string {color: #999999;}
+.type-name {color: #4682b4;}
+.warning {border-bottom: 1px dotted orange;}</style>
+<script language="JavaScript" type="text/javascript">
+var highlighted;
+
+function highlight(xid)
+{
+    var elms = document.querySelectorAll('[xid="' + xid + '"]');
+    for (k in elms) {
+        v = elms[k]
+        v.className = "active";
+    }
+    highlighted = xid;
+}
+
+function clearHighlight() {
+    var elms = document.querySelectorAll('[xid="' + highlighted + '"]');
+    for (k in elms) {
+        v = elms[k]
+        v.className = "";
+    }
+}
+
+window.onload =
+    function (e) {
+        var tags = document.getElementsByTagName("A")
+        for (var i = 0; i < tags.length; i++) {
+            tags[i].onmouseover =
+                function (e) {
+                    clearHighlight();
+                    var xid = e.toElement.getAttribute('xid');
+                    highlight(xid);
+                }
+        }
+    }</script>
+</head>
+<body>
+<table width=100% border='1px solid gray'><tr><td valign='top'><ul>
+<li><a href='#.home.fu.workspaces.PL.parser.python.test.Person', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_test_Person")'><span class='type-name'>Person</span></a><ul>
+<li><a href='#.home.fu.workspaces.PL.parser.python.test.Person.__init__', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_test_Person___init__")'><span class='function'>__init__</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.test.Person.getName', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_test_Person_getName")'><span class='function'>getName</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.test.Person.getAge', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_test_Person_getAge")'><span class='function'>getAge</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.test.Person.setAge', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_test_Person_setAge")'><span class='function'>setAge</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.test.Person.setName', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_test_Person_setName")'><span class='function'>setName</span></a></li></ul>
+</li><li><a href='#.home.fu.workspaces.PL.parser.python.test.test_age', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_test_test_age")'><span class='identifier'>test_age</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.test.test_name', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_test_test_name")'><span class='identifier'>test_name</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.test.P', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_test_P")'><span class='identifier'>P</span></a></li><li><a href='#.home.fu.workspaces.PL.parser.python.test.a', onmouseover='highlight("_home_fu_workspaces_PL_parser_python_test_a")'><span class='identifier'>a</span></a></li></ul>
+</td><td><pre><span class='lineno'>   1</span> #! /usr/bin/env python
+<span class='lineno'>   2</span> 
+<span class='lineno'>   3</span> class <a name='.home.fu.workspaces.PL.parser.python.test.Person', xid ='.home.fu.workspaces.PL.parser.python.test.Person', title='<Person>'>Person</a>:
+<span class='lineno'>   4</span>     def  <a name='.home.fu.workspaces.PL.parser.python.test.Person.__init__', xid ='.home.fu.workspaces.PL.parser.python.test.Person.__init__', title='(Person, None, None) -> None'>__init__</a>(<a name='.home.fu.workspaces.PL.parser.python.test.Person.__init__.self', xid ='.home.fu.workspaces.PL.parser.python.test.Person.__init__.self', title='Person'>self</a>, <a name='.home.fu.workspaces.PL.parser.python.test.Person.__init__.age', xid ='.home.fu.workspaces.PL.parser.python.test.Person.__init__.age', title='None'>age</a>=None, <a name='.home.fu.workspaces.PL.parser.python.test.Person.__init__.name', xid ='.home.fu.workspaces.PL.parser.python.test.Person.__init__.name', title='None'>name</a>=None):
+<span class='lineno'>   5</span>         <a href='#.home.fu.workspaces.PL.parser.python.test.Person.__init__.self', xid ='.home.fu.workspaces.PL.parser.python.test.Person.__init__.self', title='Person'>self</a>.<a name='.home.fu.workspaces.PL.parser.python.test.Person.age', xid ='.home.fu.workspaces.PL.parser.python.test.Person.age', title='None'>age</a> = <a href='#.home.fu.workspaces.PL.parser.python.test.Person.__init__.age', xid ='.home.fu.workspaces.PL.parser.python.test.Person.__init__.age', title='None'>age</a>
+<span class='lineno'>   6</span>         <a href='#.home.fu.workspaces.PL.parser.python.test.Person.__init__.self', xid ='.home.fu.workspaces.PL.parser.python.test.Person.__init__.self', title='Person'>self</a>.<a name='.home.fu.workspaces.PL.parser.python.test.Person.name', xid ='.home.fu.workspaces.PL.parser.python.test.Person.name', title='None'>name</a> = <a href='#.home.fu.workspaces.PL.parser.python.test.Person.__init__.name', xid ='.home.fu.workspaces.PL.parser.python.test.Person.__init__.name', title='None'>name</a>
+<span class='lineno'>   7</span>     
+<span class='lineno'>   8</span>     def <a name='.home.fu.workspaces.PL.parser.python.test.Person.getName', xid ='.home.fu.workspaces.PL.parser.python.test.Person.getName', title='Person -> int'>getName</a>(<a name='.home.fu.workspaces.PL.parser.python.test.Person.getName.self', xid ='.home.fu.workspaces.PL.parser.python.test.Person.getName.self', title='Person'>self</a>):
+<span class='lineno'>   9</span>         return <a href='#.home.fu.workspaces.PL.parser.python.test.Person.getName.self', xid ='.home.fu.workspaces.PL.parser.python.test.Person.getName.self', title='Person'>self</a>.<a href='#.home.fu.workspaces.PL.parser.python.test.Person.name', xid ='.home.fu.workspaces.PL.parser.python.test.Person.name', title='int'>name</a>
+<span class='lineno'>  10</span>         
+<span class='lineno'>  11</span>     def <a name='.home.fu.workspaces.PL.parser.python.test.Person.getAge', xid ='.home.fu.workspaces.PL.parser.python.test.Person.getAge', title='Person -> ?'>getAge</a>(<a name='.home.fu.workspaces.PL.parser.python.test.Person.getAge.self', xid ='.home.fu.workspaces.PL.parser.python.test.Person.getAge.self', title='Person'>self</a>):
+<span class='lineno'>  12</span>         return <a href='#.home.fu.workspaces.PL.parser.python.test.Person.getAge.self', xid ='.home.fu.workspaces.PL.parser.python.test.Person.getAge.self', title='Person'>self</a>.age
+<span class='lineno'>  13</span>         
+<span class='lineno'>  14</span>     def <a name='.home.fu.workspaces.PL.parser.python.test.Person.setAge', xid ='.home.fu.workspaces.PL.parser.python.test.Person.setAge', title='(Person, str) -> None'>setAge</a>(<a name='.home.fu.workspaces.PL.parser.python.test.Person.setAge.self', xid ='.home.fu.workspaces.PL.parser.python.test.Person.setAge.self', title='Person'>self</a>,<a name='.home.fu.workspaces.PL.parser.python.test.Person.setAge.age', xid ='.home.fu.workspaces.PL.parser.python.test.Person.setAge.age', title='str'>age</a>):
+<span class='lineno'>  15</span>         <a href='#.home.fu.workspaces.PL.parser.python.test.Person.setAge.self', xid ='.home.fu.workspaces.PL.parser.python.test.Person.setAge.self', title='Person'>self</a>.<a name='.home.fu.workspaces.PL.parser.python.test.Person.age', xid ='.home.fu.workspaces.PL.parser.python.test.Person.age', title='str'>age</a> = <a href='#.home.fu.workspaces.PL.parser.python.test.Person.setAge.age', xid ='.home.fu.workspaces.PL.parser.python.test.Person.setAge.age', title='str'>age</a>
+<span class='lineno'>  16</span>     def <a name='.home.fu.workspaces.PL.parser.python.test.Person.setName', xid ='.home.fu.workspaces.PL.parser.python.test.Person.setName', title='(Person, int) -> None'>setName</a>(<a name='.home.fu.workspaces.PL.parser.python.test.Person.setName.self', xid ='.home.fu.workspaces.PL.parser.python.test.Person.setName.self', title='Person'>self</a>, <a name='.home.fu.workspaces.PL.parser.python.test.Person.setName.name', xid ='.home.fu.workspaces.PL.parser.python.test.Person.setName.name', title='int'>name</a>):
+<span class='lineno'>  17</span>         <a href='#.home.fu.workspaces.PL.parser.python.test.Person.setName.self', xid ='.home.fu.workspaces.PL.parser.python.test.Person.setName.self', title='Person'>self</a>.<a name='.home.fu.workspaces.PL.parser.python.test.Person.name', xid ='.home.fu.workspaces.PL.parser.python.test.Person.name', title='int'>name</a> = <a href='#.home.fu.workspaces.PL.parser.python.test.Person.setName.name', xid ='.home.fu.workspaces.PL.parser.python.test.Person.setName.name', title='int'>name</a>
+<span class='lineno'>  18</span>                     
+<span class='lineno'>  19</span> <a name='.home.fu.workspaces.PL.parser.python.test.test_age', xid ='.home.fu.workspaces.PL.parser.python.test.test_age', title='int'>test_age</a> = 10;
+<span class='lineno'>  20</span> <a name='.home.fu.workspaces.PL.parser.python.test.test_name', xid ='.home.fu.workspaces.PL.parser.python.test.test_name', title='str'>test_name</a> = &quot;Tom&quot;
+<span class='lineno'>  21</span> <a name='.home.fu.workspaces.PL.parser.python.test.P', xid ='.home.fu.workspaces.PL.parser.python.test.P', title='Person'>P</a> = <a href='#.home.fu.workspaces.PL.parser.python.test.Person', xid ='.home.fu.workspaces.PL.parser.python.test.Person', title='<Person>'>Person</a>()
+<span class='lineno'>  22</span> <a href='#.home.fu.workspaces.PL.parser.python.test.P', xid ='.home.fu.workspaces.PL.parser.python.test.P', title='Person'>P</a>.<a href='#.home.fu.workspaces.PL.parser.python.test.Person.setAge', xid ='.home.fu.workspaces.PL.parser.python.test.Person.setAge', title='(Person, str) -> None'>setAge</a>(<a href='#.home.fu.workspaces.PL.parser.python.test.test_name', xid ='.home.fu.workspaces.PL.parser.python.test.test_name', title='str'>test_name</a>);             # works just fine
+<span class='lineno'>  23</span> <a href='#.home.fu.workspaces.PL.parser.python.test.P', xid ='.home.fu.workspaces.PL.parser.python.test.P', title='Person'>P</a>.<a href='#.home.fu.workspaces.PL.parser.python.test.Person.setName', xid ='.home.fu.workspaces.PL.parser.python.test.Person.setName', title='(Person, int) -> None'>setName</a>(<a href='#.home.fu.workspaces.PL.parser.python.test.test_age', xid ='.home.fu.workspaces.PL.parser.python.test.test_age', title='int'>test_age</a>);            #works just fine
+<span class='lineno'>  24</span> <a name='.home.fu.workspaces.PL.parser.python.test.a', xid ='.home.fu.workspaces.PL.parser.python.test.a', title='{str | int}'>a</a> = &quot;Hello, your name is &quot; + <a href='#.home.fu.workspaces.PL.parser.python.test.P', xid ='.home.fu.workspaces.PL.parser.python.test.P', title='Person'>P</a>.<a href='#.home.fu.workspaces.PL.parser.python.test.Person.getName', xid ='.home.fu.workspaces.PL.parser.python.test.Person.getName', title='Person -> int'>getName</a>()  #Gotcha you, unexpected type error
+<span class='lineno'>  25</span> # TypeError: cannot concatenate &#39;str&#39; and &#39;int&#39; objects
+</pre></td></tr></table></body></html>
